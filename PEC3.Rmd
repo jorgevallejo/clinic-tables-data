@@ -1,0 +1,572 @@
+---
+title: "PEC 3"
+author: "Jorge Vallejo Ortega"
+output: pdf_document
+---
+# PEC 3 - Instrucciones
+
+Para este trabajo se debe utilizar MARKDOWN y entregarlo en Word o Pdf usando Knitr en RStudio.
+
+También se debe entregar el fichero de código en R.
+
+## Enunciado
+
+Caso práctico lo más ajustado a la realidad que sea posible y que permita poner en práctica los conceptos principales del curso.
+
+A partir de una colección de datos, realizar un estudio estadístico con R. Se pueden seguir los siguientes puntos:
+
+### 1. Buscar un conjunto de datos relacionados con la Bioestadística o la Bioinformática (ver enlaces).
+Tienen que ser datos públicos.
+Hay que explicar la procedencia de los datos e incluir las referencias que correspondan, y justificar por qué se han elegido esos datos.
+
+### 2. Mostrar los datos.
+Utilizando R, mostrar y explicar qué tipo de fichero hemos importado, las variables que forman parte de él (tipo, clasificación,...) y todo aquello que parezca relevante.
+Incluir capturas de pantalla y las instrucciones en R que habéis utilizado para importar y mostrar los datos.
+
+### 3. Preguntas objetivo.
+Realizar un mínimo de seis preguntas objetivo que den una idea de la información contenida en el conjunto de datos.
+Pueden estar basadas en el tipo de consultas realizadas en la Sección 2 de la PEC 1.
+También utilizando las definiciones de funciones como se trabaja en el LAB3.
+
+### 4. Análisis descriptivo de los datos.
+Este estudio debe incluir, como se vio en la Sección 3 de la PEC1, un resumen paramétrico de los datos y diversas representaciones gráficas de los mismos basadas en determinados criterios.
+Gráficos y criterios a elección.
+
+### 5. Probabilidad y simulación.
+Basándoos en los conceptos trabajados en el LAB4 y PEC2, realizad un mínimo de tres cuestiones que respondan a una cuestión de probabilidad y un mínimo de una cuestión que corresponda a un breve modelo de simulación.
+
+### 6. Análisis de regresión
+Realizad un breve análisis de regresión a partir de las variables que disponéis y utilizando el criterio que responda a alguna pregunta de interés que os hayáis planteado.
+
+### 7. Valoración final
+A partir de los datos de origen y el estudio realizado, haced una valoración final:
+¿Disponemos de conclusiones finales?
+¿Sería necesario hacer un análisis más avanzado?
+¿Faltan datos para obtener otro tipo de información como...?
+
+## Sección 2
+
+Hasta ahora se han usado datos que correspondían a archivos de tipo texto u hojas de cálculo.
+En este ejercicio hay que realizar un breve estudio acerca de cómo gestionar la información a partir de una base de datos (script SQL,...):
+ * Seleccionar una base de datos de libre acceso e importad, desde RStudio, estos datos. Mostrad el código utilizado y el resultado obtenido por pantalla.
+ 
+ * Realizad un par de consultas, desde RStudio, a partir de estos datos y mostrad el código utilizado y resultado obtenido por pantalla.
+ 
+# 1. Conjunto de datos
+
+[Querría hacer algo con datos de reproducción asistida humana]
+
+Finalmente me he decidido por los datos de reproducción asistida de los Estados Unidos publicados en abierto por el CDC:
+https://www.cdc.gov/art/artdata/index.html
+
+Los datos de años anteriores también se pueden descargar/consultar:
+https://www.cdc.gov/art/reports/archive.html
+
+# Descarga de los datos de interés
+
+```{r}
+source_url <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Table-Dataset.xlsx"
+
+download.file(source_url, destfile = "FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
+```
+
+También podríamos querer los datos de años anteriores para hacer estudios a lo largo del tiempo:
+
+```{r}
+years <- c(1995:2015)
+
+url_start1 <- "https://www.cdc.gov/art/excelfiles/clinic_tables_data_"
+url_start2 <- "https://www.cdc.gov/art/excelfiles/"
+url_start3 <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-"
+
+file_start1 <- "clinic_tables_data_"
+file_start2 <- ""
+file_start3 <- "FINAL-"
+
+url_end1 <- ".xls"
+url_end2 <- "-clinic-tables-dataset.xls"
+url_end3 <- "-clinic-table-dataset.xls"
+
+# This code is rough on the edges, it doesn't take into account when a file
+# fails to download.
+
+for (year in years){
+  if (year <= 2012){
+    url <- paste0(url_start1, year, url_end1)
+    destfile <- paste0(file_start1, year, url_end1)
+  }
+  else if (year == 2013){
+    url <- paste0(url_start2, year, url_end2)
+    destfile <- paste0(file_start2, year, url_end2)
+  }
+    else if (year == 2014){
+    url <- "https://www.cdc.gov/art/artdata/docs/excel/2014-Clinic-Tables-Data-Dictionary.xls"
+    destfile <- "2014-Clinic-Tables-Data-Dictionary.xls"
+  }
+  else {
+    url <- paste0(url_start3, year, url_end3)
+    destfile <- paste0(file_start3, year, url_end3)
+  }
+  
+  #cat(url, "\n", destfile, "\n\n") # Cheks that the names of url and files are rightly constructed.
+  download.file(url, destfile, method = "curl")
+}
+```
+
+# 2. Mostrar los datos
+
+The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ contiene datos de tratamientos de reproducción in vitro procedentes de 448 clínicas de Estados Unidos recogidos durante el año 2017. It is an Excel workbook containing four sheets:
+
+**National Summary Data**. Datos agregados de todas las clínicas incluidas en el informe.
+**National Table Dictionary**. Tabla-diccionario con la explicación de cada variable presente en la tabla anterior.
+**Clinic Table Data Records**. Tabla con los datos desglosados de cada clínica.
+**Clinic Table Dictionary**.  Tabla-diccionario con la explicación de cada variable presente en la tabla de clínicas.
+
+Los datos que me interesan son los desglosados por clínica, así que importaré los datos de las hojas **Clinic Table Dictionary** y **Clinic Table Data Records**.
+
+```{r}
+require("xlsx")
+clinic_dictionary <- read.xlsx("FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
+                               endRow = 165, encoding = "UTF-8")
+# Everything is NA after row 166; row 166 is a comment.
+
+View(clinic_dictionary)
+
+# En el visor, en la columna Age los símbolos '>=' aparecen como '=',
+# pero si pedimos que nos imprima la columna en pantalla sí muestra los
+# símbolos adecuados.
+
+clinic_data <- read.xlsx("FINAL-2017-Clinic-Table-Dataset.xlsx", 3
+                         , encoding = "UTF-8", stringsAsFactors=FALSE)
+View(clinic_data)
+
+```
+
+Veamos cómo ha quedado codificada cada variable:
+
+```{r}
+str(clinic_data, list.len = length(clinic_data))
+```
+
+En la estructura podemos observar un problema de esta fuente de datos. Los porcentajes y ratios aparecen como texto, no como números. Va a ser necesario preprocesar los datos de la tabla antes de trabajar con ellos.
+
+¿Por qué hay variables numéricas que se detectan como texto? En el caso de las ratios está claro, contienen signos ("%", "/", "<") que no son números. ¿Y el resto?
+
+Ordenaremos alfabéticamente las columnas, a ver si encontramos algo extraño.
+
+Primero de todo y para evitar problemas posteriores, vamos a cambiar los valores vacíos por `NA`:
+
+```{r}
+clinic_data[clinic_data==""] <- NA
+
+View(clinic_data)
+```
+
+Si ordenamos los valores de las columnas, vemos que hay columnas de números enteros en las que los miles están marcados con una coma (`,`).
+
+```{r}
+ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
+
+View(ordenadas)
+
+```
+
+A continuación corregiremos las variables que deberían ser `integer` o `numeric`.
+
+Adaptado de una pregunta que he encontrado en Stack Overflow:
+[How to read data when some numbers contain commas as thousand separator?](https://stackoverflow.com/questions/1523126/how-to-read-data-when-some-numbers-contain-commas-as-thousand-separator)
+
+```{r}
+# Vectores que hacen referencia a las columnas que deberían ser números enteros
+# y las que deberían ser ratios.
+
+integers <- c(7:11, 22:26, 37:41, 82:85, 94:99, 163)
+ratios <- c(12:21, 27:36, 42:81, 86:93, 100:154)
+
+# Preprocesamos las columnas con enteros para eliminar el símbolo "," en los miles.
+clinic_data[, integers] <- lapply(clinic_data[, integers],
+                                  function(x){
+                                    as.integer(gsub(",", "", x))
+                                  })
+
+str(clinic_data[, integers])
+```
+
+Preprocesar las columnas de ratios es algo más complejo. Es necesario lidiar con tres casos diferentes:
+
+1) Los datos <1%. Como no puedo conocer el valor real, lo que haré es elegir arbitrariamente el valor 0.5% que expresaré como una ratio de 0.005.
+
+2) Datos que incluyen el símbolo "%". Misma estrategia que con los números enteros; eliminaré el símbolo con gsub. Además dividiré el resultado entre 100 para que todos los números sean ratios (tantos por uno).
+
+3) Datos que son fracciones. Esto es un pelín más complicado. Con expresiones regulares aislaré en numerador y el denominador y devolveré el resultado de la división.
+
+```{r}
+# Esta función procesa las ratios que aparecen como fracciones.
+divide <- function(x){
+  numerador <- as.numeric(gsub(" .*$", "", x))
+  denominador <- as.numeric(gsub("^.*/ ", "", x))
+  return (numerador / denominador)
+}
+
+# Esta es la función principal para procesar las ratios de texto a números.
+# Aparecerán avisos de 'NA introduced by coercion' debido a las celdas en blanco.
+numerizador <- function(dato){
+    ifelse (dato == "<1%", 0.005,
+            ifelse ((grepl("%", dato) == TRUE), as.numeric(gsub("%", "", dato))/100,
+                    ifelse ((grepl("/", dato)==TRUE), divide(dato), as.numeric(dato))))
+}
+# La función ifelse es necesaria para trabajar con vectores de longitud >1.
+
+# Preprocesamiento de las ratios:
+clinic_data[, ratios] <- lapply(clinic_data[, ratios], numerizador)
+# Al aplicarla aparecen multitud de avisos de 'NAs introduced by coercion'
+# Creo que se debe a que los "NA" están almacenados como texto, pero no estoy seguro.
+# He sido incapaz de corregirlo. Se puede evitar que salte el aviso, pero no me gusta
+# enmascarar la aparición de avisos de error.
+
+str(clinic_data[, ratios], list.len = length(clinic_data[, ratios]))
+
+```
+
+Los avisos de `NAs introduced by coercion` no estoy seguro de por qué aparecen. Sospecho que los valores `NA` de la tabla están guardados como texto, no como NA y por eso aparece el aviso.
+
+
+## Variables: tipo y descripión
+
+Es posible que me haya dejado llevar por la emoción escogiendo un fichero demasiado grande para empezar. La tabla contiene 165 variables. No es un número descabellado pero quizá sea poco manejable para el objetivo de este ejercicio.
+
+```{r}
+str(clinic_data, list.len = length(clinic_data))
+```
+
+De las 165 variables; 17 son cadenas de texto, 25 son números enteros y 123 son números no enteros.
+
+Las variables de texto corresponden a datos descriptivos como: nombre de la clínica, ciudad en la que se ubica, estado, nombre del director médico y si dispone o no de una serie de servicios (donación de óvulos, donación de embriones, programa de criopreservación de óvulos, programa de criopreservación de embriones, si atienden a mujeres solteras, servicio de maternidad subrogada, si la clínica es miembro de la SART (Society for Assisted Reproductive Technology) y si dispone de un laboratorio de embriología acreditado). Muchas de estas variables funcionarán como factores.
+
+Las variables de tipo `entero` son:
+*OrderID*: identificador único de cada registro.
+*ND_NumIntentRet*: número de intentos de recogida de óvulos (excluyendo donantes). Como ocurrirá con la mayoría de variables numéricas, está dividida en cinco categorías de edad, desde menores de 35 años hasta mayores de 43.
+*ND_NumRetrieve*: número de recogida de óvulos (excluyendo donantes). No coincide con el número de intentos porque, en ocasiones, es necesario detener el proceso de recogida o este no tiene éxito.
+*ND_NumTrans*: número de transferencias (excluyendo donantes). Transferencia es la técnica por la que un embrión creado in vitro es transferido del medio de cultivo al útero de la paciente.
+*Donor_NumTrans*: Número de transferencias a partir de ovocitos de donante. Esta categoría está dividida en cuatro variables según si los ovocitos son frescos o congelados, si el embrión ha sido congelado o no y si el embrión es una donación.
+*TotNumCycles*: Número total de ciclos. En reproducción asistida los ciclos incluyen cualquier proceso en el que se dé al menos una de estas situaciones; 1) se lleva a cabo un procedimiento de reproducción asistida, 2) la paciente se ha sometido a estimulación ovárica o vigilancia ovárica con intención de llevar a cabo un procedimiento de reproducción asistida, o 3) se han descongelado embriones con intención de transferirlos a una paciente.
+*NumResearch*: Número de ciclos de investigación excluidos.
+
+Las variables de tipo numérico son:
+*ND_IntentRetLB*: Porcentaje de intentos de recogida de óvulos que han resultado en nacido vivo (excluyendo donantes).
+*ND_IntentRetSingleLB*: Porcentaje de intentos de recogida de óvulos que han resultado en un único nacido vivo (excluyendo donantes).
+*ND_RetrieveLB*: Porcentaje de recogida de ovocitos que han resultado en nacido vivo (excluyendo donantes).
+*ND_RetrieveSingleLB*: Porcentaje de recogida de ovocitos que han resultado en un único nacido vivo (excluyendo donantes).
+*ND_TransLB*: Porcentaje de transferencias que dan como resultado nacidos vivos (excluyendo donantes).
+*ND_TransSingleLB*: Porcentaje de transferencias que dan como resultado un único nacido vivo (excluyendo donantes).
+*ND_IntentRetPerLB*: Número de intentos de recogida por cada nacimiento de vivos (excluyendo donantes).
+*NewND_1IntentRetLB1*: Porcentaje de nuevos pacientes con nacidos vivos tras un único intento de recogida (excluyendo donantes).
+*NewND_2IntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras uno o dos intentos de recogida (excluyendo donantes).
+*NewND_AllIntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras todos los intentos de recogida (excluyendo donantes).
+*NewND_IntentRetPerNew1*: Número mmedio de intentos de recogida de ovocitos por cada nuevo paciente (excluyendo donantes).
+*NewND_TransPerIntentRet1*: Número medio de transferencias por intento de recogida (excluyendo donantes).
+*Donor_TransLB*: Porcentaje de transferencias resultando en nacidos vivos (sólo donantes). Esta variable está dividida en cuatro según si la transferencia se ha hecho a partir de ovocito fresco, congelado, embrión congelado o embrión donado.
+*Donor_TranSingleLB*: Porcentaje de transferencias restultando en un único nacido vivo (sólo donaciones). Dividido en cuatro variables según el punto de partida sean ovocitos frescos, congelados, embriones congelados o embriones donados.
+*CycleCancel*: Porcentaje de ciclos cancelados antes de la recogida o la descongelación.
+*CycleStop*: Porcentaje de ciclos detenidos entre la recogida y la transferencia (o almacenamiento en banco).
+*CycleFertPres*: Porcentaje de ciclos dedicados a preservación de fertilidad.
+*TransCarrier*: Porcentaje de transferencias con uso de gestación subrogada.
+*TransFrozEmb*: Porcentaje de transferencias usando embriones congelados.
+*TransICSI*: Porcentaje de transferencias en las que al menos un embrión procede de ICSI.
+*TransPGT*: Porcentaje de transferencias en las que al menos un embrión se ha sometido a DGP.
+*ReasonMale*: Porcentaje de ciclos debidos a factor masculino.
+*ReasonEndo*: Porcentaje de ciclos debidos a endometriosis.
+*ReasonTubal*: Porcentaje de ciclos debidos a problemas en las trompas de Falopio.
+*ReasonOvul*: Porcentaje de ciclos debidos a disfunción ovulatoria.
+*ReasonUterine*: Porcentaje de ciclos debidos a problemas uterinos.
+*ReasonPGT*: Porcentaje de ciclos debidos a DGP.
+*ReasonCarrier*: Porcentaje de ciclos debidos a gestación subrogada.
+*ReasonDOR*: Porcentaje de ciclos por reserva ovárica disminuida.
+*ReasonBank*: Porcentaje de ciclos para adición a banco.
+*ReasonPregLoss*: Porcentaje de ciclos por pérdida recurrente de embarazo.
+*ReasonOtherInfert*: Porcentaje de ciclos por otras razones de infertilidad.
+*ReasonNonInfert*: Porcentaje de ciclos por otras razones, no relacionadas con la infertilidad.
+*ReasonUnexplained*: Porcentaje de ciclos por razones indeterminadas.
+
+
+# 3. Preguntas objetivo
+
+Resumen numérico básico del número total de ciclos por hospital (sin tener en cuenta la edad de la paciente):
+```{r}
+# Resumen numérico básico
+estadisticos <- c("media", "min.", "max.", "desv.estandar", "C.V.", "25%", "50%", "75%")
+variables <- c("TotNumCyclesAll")
+df <- clinic_data
+est_vector <- c()
+
+for (var in variables) {
+  df_subset <- df[,var] # Extraigo la columna de valores correspondiente a la variable
+  var_sd <- sd(df_subset, na.rm=TRUE) # desviación estándar
+  var_mean <- mean(df_subset, na.rm = TRUE) # media
+  var_min <- min(df_subset,na.rm = TRUE)
+  var_max <- max(df_subset, na.rm = TRUE)
+  var_CV <- var_sd/var_mean # coeficiente de variación
+  var_percentile <- quantile(df_subset, probs=c(0.25, 0.5, 0.75), names=FALSE, na.rm = TRUE) # percentiles
+  est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Voy añadiendo todos los resultados a un mismo vector.
+  }
+
+# Convierto el vector con todos los resultados en una matriz, y esta en una dataframe.
+testmatrix <- matrix(data=est_vector, ncol=length(estadisticos), byrow = TRUE, 
+                     dimnames = list(variables, estadisticos))
+testdf <- as.data.frame(testmatrix)
+
+testdf
+```
+
+Histograma de frecuencia mostrando número de transferencias procedentes de donante. Cuatro gráficas represenando el punto de partida: ovocito fresco, congelado, embrión congelado y embrión donado (en los otros tres casos la donación es el ovocito, no el embrión).
+
+```{r}
+par(mfrow = c(2, 2)) # generamos un array de 2x2 para dibujar las gráficas.
+
+xlab <- "Transferencias por hospital"
+ylab <- "Frecuencia"
+
+hist(clinic_data$Donor_NumTrans1,
+     main = "Embrión fresco de ovocito fresco", xlab = xlab, ylab = ylab, col = "blue")
+hist(clinic_data$Donor_NumTrans2,
+     main = "Embrión fresco de ovocito congelado", xlab = xlab, ylab = ylab, col = "tomato")
+hist(clinic_data$Donor_NumTrans3,
+     main = "Embrión congelado", xlab = xlab, ylab = ylab, col = "yellow")
+hist(clinic_data$Donor_NumTrans4,
+     main = "Embrión donado", xlab = xlab, ylab = ylab, col = "green")
+
+
+```
+
+Uno de los datos que se nos ofrece es el estado de la acreditación del laboratorio de embriología. Para este tipo de datos puede ser más útil una tabla que una gráfica:
+
+
+```{r}
+table(clinic_data$LabAccred)
+```
+
+En cambio sí que nos puede resultar más interesante ver en una gráfica otro tipo de datos cualitativos. Por ejemplo, cuántas clínicas que ofrecen servicio de reproducción asistida hay en cada estado.
+
+```{r}
+# Most of this code I adapted it from:
+# https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
+
+par(mar = c(7, 4, 2, 2) + 0.2)
+
+end_point <- 0.5 + length(unique(clinic_data$CurrentClinicState)) + length(unique(clinic_data$CurrentClinicState))-1
+
+barplot(sort(table(clinic_data$CurrentClinicState), decreasing = TRUE),
+        # This adjust the maxim value in the y axis:
+        ylim = c(0,5+max(table(clinic_data$CurrentClinicState))),
+        xaxt = "n", # Avoids plotting the names in the x axis.
+        space = 1)
+
+text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
+     srt = 60, adj= 1, xpd = TRUE,
+     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
+```
+
+Does the number of intended retrievals change with age? Let's use a boxplot graphic:
+
+```{r}
+# To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
+intended_retrievals <- clinic_data[,7:11]
+intended_retrievals[intended_retrievals == 0] <- 1
+
+boxplot(intended_retrievals,
+        log = "y",
+        yaxt = "n",  # No dibuja los ticks del eje y.
+        xlab = "Age groups",
+        ylab = "Intended Retrievals by Clinic",
+        main = "Intended Retrievals by Clinic and Age Group",
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"))
+
+# establece los límites del eje y a partir del logaritmo en base 10
+# de los valores máximos y mínimos del dataframe.
+y1 <- floor(log10(range(intended_retrievals))) 
+# Vector con los valores enteros desde el mínimo al máximo del eje.
+pow <- seq(y1[1], y1[2]+1)
+# Vector con las posiciones de los ticks.
+ticksat <- as.vector(sapply(pow, function(p) (1:10)*10^p))
+# Drawing the axis (main ticks)
+axis(2, 10^pow)
+# Drawing the axis (secondary ticks)
+axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
+```
+
+I suspect that the median diminishes with age group because donor eggs are prefered for older women instead of retrieval of their own eggs.
+
+De la misma forma, nos podemos preguntar qué porcentaje de intentos de recogida de ovocitos da lugar a nacidos vivos. Eso nos orientaría un poco en la pregunta de si vale la pena recoger ovocitos de las pacientes cuando son de edad relativamente avanzada.
+
+```{r}
+# To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
+pct_int_ret <- clinic_data[,12:16]
+# pct_int_ret[pct_int_ret == 0] <- 1
+
+boxplot(pct_int_ret,
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of intended retrievals resulting in live births \nby hospital and age group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"))
+
+```
+
+Como sospechábamos, este gráfico muestra un descenso muy acusado en el ratio de intentos de recogida de ovocitos resultantes en nacidos vivos si tenemos en cuenta el grupo de edad de la madre.
+
+# 4. Análisis descriptivo
+
+En esta sección llevaremos a cabo una exploración más exhaustiva de nuestras variables, incluyendo un resumen paramétrico de los datos y representaciones gráficas.
+
+## Servicios
+
+Un sumario de los servicios ofrecidos por las clínicas.
+
+```{r}
+# Columnas que contienen los datos de los servicios: 155-160 y 162
+services <- clinic_data[c(155:160, 162)]
+
+# nombres de variables:
+services_names <- c("Donación de ovocitos",
+  "Donación de embriones",
+  "Criopreservación de embriones",
+  "Criopreservación de ovocitos",
+  "Atención a mujeres solteras",
+  "Gestación subrogada",
+  "Laboratorio de embriología")
+
+colnames(services) <- services_names
+
+lapply(services, table)
+
+```
+
+## Resultados de las técnicas de reproduccion
+
+Resumen descriptivo de las variables numéricas:
+
+```{r}
+
+variables <- colnames(clinic_data[c(7:154, 163)])
+estadisticos <- c("media", "min.", "max.", "desv.estandar", "C.V.", "25%", "50%", "75%")
+est_vector <- c()
+
+for (var in variables) {
+    df_subset <- clinic_data[,var] # Extraigo la columna de valores correspondiente a la variable
+    var_sd <- sd(df_subset, na.rm=TRUE) # desviación estándar
+    var_mean <- mean(df_subset, na.rm = TRUE) # media
+    var_min <- min(df_subset,na.rm = TRUE)
+    var_max <- max(df_subset, na.rm = TRUE)
+    var_CV <- var_sd/var_mean # coeficiente de variación
+    var_percentile <- quantile(df_subset, probs=c(0.25, 0.5, 0.75), names=FALSE, na.rm = TRUE) # percentiles
+    est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Voy añadiendo todos los resultados a un mismo vector.
+  }
+  
+  # Convierto el vector con todos los resultados en una matriz, y esta en una dataframe.
+  testmatrix <- matrix(data=est_vector, ncol=length(estadisticos), byrow = TRUE, 
+                       dimnames = list(variables, estadisticos))
+  testdf <- as.data.frame(testmatrix)
+  
+  testdf
+
+```
+
+## Representaciones gráficas
+
+### Retrievals
+
+**Egg retrieval** is a procedure to collect the eggs contained in the ovarian follicles.
+
+```{r}
+# Since I think I am going to need this code several times, I will wrap it into a function.
+
+log_boxplot <- function(x, ...){
+  # To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
+  x[x == 0] <- 1
+
+  boxplot(x,
+        log = "y",
+        yaxt = "n",  # No dibuja los ticks del eje y.
+        ...) # Additional arguments to be passed to the function boxplot.
+
+# establece los límites del eje y a partir del logaritmo en base 10
+# de los valores máximos y mínimos del dataframe.
+  y1 <- floor(log10(range(x))) 
+# Vector con los valores enteros desde el mínimo al máximo del eje.
+  pow <- seq(y1[1], y1[2]+1)
+# Vector con las posiciones de los ticks.
+  ticksat <- as.vector(sapply(pow, function(p) (1:10)*10^p))
+# Drawing the axis (main ticks)
+  axis(2, 10^pow)
+# Drawing the axis (secondary ticks)
+  axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
+}
+```
+```{r fig.height = 15, fig.width = 8}
+# Let's actually draw the graphs.
+
+par(mfcol = c(3, 1))
+
+# Egg retrievals by clinic
+x <- clinic_data[,22:26]
+log_boxplot(x,xlab = "Age groups", ylab = "Egg Retrievals by Clinic",
+        main = "Egg Retrievals by Clinic and Age Group",
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
+
+# Ratio of retrievals resulting in live births
+boxplot(clinic_data[c(27:31)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Retrievals Resulting in Live Births \nby Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "lightgoldenrod1")
+
+# Ratio of retrievals resulting in singleton live births
+boxplot(clinic_data[c(32:36)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Retrievals Resulting in Singleton Live Births \nby Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+```
+
+I have had some problems with this image. Labels and points are more little than I wanted, but at least I have managed to include all three graphs into the same image.
+
+
+## Transfers
+
+**Transfer** is a procedure in which an embryo is transferred, from laboratory culture, to the uterus.
+
+Live above, we will represent number of transfers, percentage of transfers resulting in live births, and those resulting in singleton live births.
+
+```{r fig.height = 15, fig.width = 8}
+
+par(mfcol = c(3, 1))
+
+# Number of transfers
+x <- clinic_data[,37:41]
+log_boxplot(x,xlab = "Age groups", ylab = "Transfers by Clinic",
+        main = "Number of Transfers by Clinic and Age Group",
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
+
+# Ratio of transfers resulting in live births
+boxplot(clinic_data[c(42:46)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Resulting in Live Births \nby Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "lightgoldenrod1")
+
+# Ratio of transfers resulting in singleton live births
+boxplot(clinic_data[c(47:51)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Resulting in Singleton Live Births \nby Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+```
+
+Look at the median value of the percentage of transfers resulting in live births for the >=43 years age group. It is zero. If we look up the value of the mean, it is a just bit better with 0.11.
+
+All in all, even the median ratio for the youngest age group is not that great, a tad under 0.5 (0.48).
