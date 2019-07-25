@@ -67,7 +67,7 @@ https://www.cdc.gov/art/reports/archive.html
 ```{r}
 source_url <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Table-Dataset.xlsx"
 
-download.file(source_url, destfile = "FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
+download.file(source_url, destfile = "../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
 ```
 
 También podríamos querer los datos de años anteriores para hacer estudios a lo largo del tiempo:
@@ -126,7 +126,7 @@ Los datos que me interesan son los desglosados por clínica, así que importaré
 
 ```{r}
 require("xlsx")
-clinic_dictionary <- read.xlsx("FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
+clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
                                endRow = 165, encoding = "UTF-8")
 # Everything is NA after row 166; row 166 is a comment.
 
@@ -136,7 +136,7 @@ View(clinic_dictionary)
 # pero si pedimos que nos imprima la columna en pantalla sí muestra los
 # símbolos adecuados.
 
-clinic_data <- read.xlsx("FINAL-2017-Clinic-Table-Dataset.xlsx", 3
+clinic_data <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 3
                          , encoding = "UTF-8", stringsAsFactors=FALSE)
 View(clinic_data)
 
