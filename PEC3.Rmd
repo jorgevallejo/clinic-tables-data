@@ -1,7 +1,9 @@
 ---
 title: "PEC 3"
 author: "Jorge Vallejo Ortega"
-output: pdf_document
+output: 
+  html_document:
+   keep_md: TRUE
 ---
 # PEC 3 - Instrucciones
 
@@ -501,6 +503,7 @@ log_boxplot <- function(x, ...){
   axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
 }
 ```
+
 ```{r fig.height = 15, fig.width = 8}
 # Let's actually draw the graphs.
 
