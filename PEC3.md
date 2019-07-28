@@ -68,6 +68,10 @@ https://www.cdc.gov/art/reports/archive.html
 
 
 ```r
+# The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
+# be downloaded each time the .Rmd file is knitted to produce a report.
+# For allowing this chunk to run, change eval to TRUE.
+
 source_url <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Table-Dataset.xlsx"
 
 download.file(source_url, destfile = "../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
@@ -77,6 +81,10 @@ También podríamos querer los datos de años anteriores para hacer estudios a l
 
 
 ```r
+# The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
+# be downloaded each time the .Rmd file is knitted to produce a report.
+# For allowing this chunk to run, change eval to TRUE.
+
 years <- c(1995:2015)
 
 url_start1 <- "https://www.cdc.gov/art/excelfiles/clinic_tables_data_"

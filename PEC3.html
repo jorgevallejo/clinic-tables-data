@@ -243,11 +243,19 @@ $(document).ready(function () {
 </div>
 <div id="descarga-de-los-datos-de-interes" class="section level1">
 <h1>Descarga de los datos de interés</h1>
-<pre class="r"><code>source_url &lt;- &quot;https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Table-Dataset.xlsx&quot;
+<pre class="r"><code># The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
+# be downloaded each time the .Rmd file is knitted to produce a report.
+# For allowing this chunk to run, change eval to TRUE.
+
+source_url &lt;- &quot;https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Table-Dataset.xlsx&quot;
 
 download.file(source_url, destfile = &quot;../datos/FINAL-2017-Clinic-Table-Dataset.xlsx&quot;, method = &quot;curl&quot;)</code></pre>
 <p>También podríamos querer los datos de años anteriores para hacer estudios a lo largo del tiempo:</p>
-<pre class="r"><code>years &lt;- c(1995:2015)
+<pre class="r"><code># The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
+# be downloaded each time the .Rmd file is knitted to produce a report.
+# For allowing this chunk to run, change eval to TRUE.
+
+years &lt;- c(1995:2015)
 
 url_start1 &lt;- &quot;https://www.cdc.gov/art/excelfiles/clinic_tables_data_&quot;
 url_start2 &lt;- &quot;https://www.cdc.gov/art/excelfiles/&quot;
