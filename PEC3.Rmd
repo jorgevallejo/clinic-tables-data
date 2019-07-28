@@ -2,8 +2,8 @@
 title: "PEC 3"
 author: "Jorge Vallejo Ortega"
 output:
-  pdf_document: default
   md_document: default
+  pdf_document: default
 ---
 # PEC 3 - Instrucciones
 
@@ -256,49 +256,49 @@ De las 165 variables; 17 son cadenas de texto, 25 son números enteros y 123 son
 Las variables de texto corresponden a datos descriptivos como: nombre de la clínica, ciudad en la que se ubica, estado, nombre del director médico y si dispone o no de una serie de servicios (donación de óvulos, donación de embriones, programa de criopreservación de óvulos, programa de criopreservación de embriones, si atienden a mujeres solteras, servicio de maternidad subrogada, si la clínica es miembro de la SART (Society for Assisted Reproductive Technology) y si dispone de un laboratorio de embriología acreditado). Muchas de estas variables funcionarán como factores.
 
 Las variables de tipo `entero` son:
-*OrderID*: identificador único de cada registro.
-*ND_NumIntentRet*: número de intentos de recogida de óvulos (excluyendo donantes). Como ocurrirá con la mayoría de variables numéricas, está dividida en cinco categorías de edad, desde menores de 35 años hasta mayores de 43.
-*ND_NumRetrieve*: número de recogida de óvulos (excluyendo donantes). No coincide con el número de intentos porque, en ocasiones, es necesario detener el proceso de recogida o este no tiene éxito.
-*ND_NumTrans*: número de transferencias (excluyendo donantes). Transferencia es la técnica por la que un embrión creado in vitro es transferido del medio de cultivo al útero de la paciente.
-*Donor_NumTrans*: Número de transferencias a partir de ovocitos de donante. Esta categoría está dividida en cuatro variables según si los ovocitos son frescos o congelados, si el embrión ha sido congelado o no y si el embrión es una donación.
-*TotNumCycles*: Número total de ciclos. En reproducción asistida los ciclos incluyen cualquier proceso en el que se dé al menos una de estas situaciones; 1) se lleva a cabo un procedimiento de reproducción asistida, 2) la paciente se ha sometido a estimulación ovárica o vigilancia ovárica con intención de llevar a cabo un procedimiento de reproducción asistida, o 3) se han descongelado embriones con intención de transferirlos a una paciente.
-*NumResearch*: Número de ciclos de investigación excluidos.
+*OrderID*: identificador único de cada registro.  
+*ND_NumIntentRet*: número de intentos de recogida de óvulos (excluyendo donantes). Como ocurrirá con la mayoría de variables numéricas, está dividida en cinco categorías de edad, desde menores de 35 años hasta mayores de 43.  
+*ND_NumRetrieve*: número de recogida de óvulos (excluyendo donantes). No coincide con el número de intentos porque, en ocasiones, es necesario detener el proceso de recogida o este no tiene éxito.  
+*ND_NumTrans*: número de transferencias (excluyendo donantes). Transferencia es la técnica por la que un embrión creado in vitro es transferido del medio de cultivo al útero de la paciente.  
+*Donor_NumTrans*: Número de transferencias a partir de ovocitos de donante. Esta categoría está dividida en cuatro variables según si los ovocitos son frescos o congelados, si el embrión ha sido congelado o no y si el embrión es una donación.  
+*TotNumCycles*: Número total de ciclos. En reproducción asistida los ciclos incluyen cualquier proceso en el que se dé al menos una de estas situaciones; 1) se lleva a cabo un procedimiento de reproducción asistida, 2) la paciente se ha sometido a estimulación ovárica o vigilancia ovárica con intención de llevar a cabo un procedimiento de reproducción asistida, o 3) se han descongelado embriones con intención de transferirlos a una paciente.  
+*NumResearch*: Número de ciclos de investigación excluidos.  
 
 Las variables de tipo numérico son:
-*ND_IntentRetLB*: Porcentaje de intentos de recogida de óvulos que han resultado en nacido vivo (excluyendo donantes).
-*ND_IntentRetSingleLB*: Porcentaje de intentos de recogida de óvulos que han resultado en un único nacido vivo (excluyendo donantes).
-*ND_RetrieveLB*: Porcentaje de recogida de ovocitos que han resultado en nacido vivo (excluyendo donantes).
-*ND_RetrieveSingleLB*: Porcentaje de recogida de ovocitos que han resultado en un único nacido vivo (excluyendo donantes).
-*ND_TransLB*: Porcentaje de transferencias que dan como resultado nacidos vivos (excluyendo donantes).
-*ND_TransSingleLB*: Porcentaje de transferencias que dan como resultado un único nacido vivo (excluyendo donantes).
-*ND_IntentRetPerLB*: Número de intentos de recogida por cada nacimiento de vivos (excluyendo donantes).
-*NewND_1IntentRetLB1*: Porcentaje de nuevos pacientes con nacidos vivos tras un único intento de recogida (excluyendo donantes).
-*NewND_2IntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras uno o dos intentos de recogida (excluyendo donantes).
-*NewND_AllIntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras todos los intentos de recogida (excluyendo donantes).
-*NewND_IntentRetPerNew1*: Número mmedio de intentos de recogida de ovocitos por cada nuevo paciente (excluyendo donantes).
-*NewND_TransPerIntentRet1*: Número medio de transferencias por intento de recogida (excluyendo donantes).
-*Donor_TransLB*: Porcentaje de transferencias resultando en nacidos vivos (sólo donantes). Esta variable está dividida en cuatro según si la transferencia se ha hecho a partir de ovocito fresco, congelado, embrión congelado o embrión donado.
-*Donor_TranSingleLB*: Porcentaje de transferencias restultando en un único nacido vivo (sólo donaciones). Dividido en cuatro variables según el punto de partida sean ovocitos frescos, congelados, embriones congelados o embriones donados.
-*CycleCancel*: Porcentaje de ciclos cancelados antes de la recogida o la descongelación.
-*CycleStop*: Porcentaje de ciclos detenidos entre la recogida y la transferencia (o almacenamiento en banco).
-*CycleFertPres*: Porcentaje de ciclos dedicados a preservación de fertilidad.
-*TransCarrier*: Porcentaje de transferencias con uso de gestación subrogada.
-*TransFrozEmb*: Porcentaje de transferencias usando embriones congelados.
-*TransICSI*: Porcentaje de transferencias en las que al menos un embrión procede de ICSI.
-*TransPGT*: Porcentaje de transferencias en las que al menos un embrión se ha sometido a DGP.
-*ReasonMale*: Porcentaje de ciclos debidos a factor masculino.
-*ReasonEndo*: Porcentaje de ciclos debidos a endometriosis.
-*ReasonTubal*: Porcentaje de ciclos debidos a problemas en las trompas de Falopio.
-*ReasonOvul*: Porcentaje de ciclos debidos a disfunción ovulatoria.
-*ReasonUterine*: Porcentaje de ciclos debidos a problemas uterinos.
-*ReasonPGT*: Porcentaje de ciclos debidos a DGP.
-*ReasonCarrier*: Porcentaje de ciclos debidos a gestación subrogada.
-*ReasonDOR*: Porcentaje de ciclos por reserva ovárica disminuida.
-*ReasonBank*: Porcentaje de ciclos para adición a banco.
-*ReasonPregLoss*: Porcentaje de ciclos por pérdida recurrente de embarazo.
-*ReasonOtherInfert*: Porcentaje de ciclos por otras razones de infertilidad.
-*ReasonNonInfert*: Porcentaje de ciclos por otras razones, no relacionadas con la infertilidad.
-*ReasonUnexplained*: Porcentaje de ciclos por razones indeterminadas.
+*ND_IntentRetLB*: Porcentaje de intentos de recogida de óvulos que han resultado en nacido vivo (excluyendo donantes).  
+*ND_IntentRetSingleLB*: Porcentaje de intentos de recogida de óvulos que han resultado en un único nacido vivo (excluyendo donantes).  
+*ND_RetrieveLB*: Porcentaje de recogida de ovocitos que han resultado en nacido vivo (excluyendo donantes).  
+*ND_RetrieveSingleLB*: Porcentaje de recogida de ovocitos que han resultado en un único nacido vivo (excluyendo donantes).  
+*ND_TransLB*: Porcentaje de transferencias que dan como resultado nacidos vivos (excluyendo donantes).  
+*ND_TransSingleLB*: Porcentaje de transferencias que dan como resultado un único nacido vivo (excluyendo donantes).  
+*ND_IntentRetPerLB*: Número de intentos de recogida por cada nacimiento de vivos (excluyendo donantes).  
+*NewND_1IntentRetLB1*: Porcentaje de nuevos pacientes con nacidos vivos tras un único intento de recogida (excluyendo donantes).  
+*NewND_2IntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras uno o dos intentos de recogida (excluyendo donantes).  
+*NewND_AllIntentRetLB*: Porcentaje de nuevos pacientes con nacidos vivos tras todos los intentos de recogida (excluyendo donantes).  
+*NewND_IntentRetPerNew1*: Número mmedio de intentos de recogida de ovocitos por cada nuevo paciente (excluyendo donantes).  
+*NewND_TransPerIntentRet1*: Número medio de transferencias por intento de recogida (excluyendo donantes).  
+*Donor_TransLB*: Porcentaje de transferencias resultando en nacidos vivos (sólo donantes). Esta variable está dividida en cuatro según si la transferencia se ha hecho a partir de ovocito fresco, congelado, embrión congelado o embrión donado.  
+*Donor_TranSingleLB*: Porcentaje de transferencias restultando en un único nacido vivo (sólo donaciones). Dividido en cuatro variables según el punto de partida sean ovocitos frescos, congelados, embriones congelados o embriones donados.  
+*CycleCancel*: Porcentaje de ciclos cancelados antes de la recogida o la descongelación.  
+*CycleStop*: Porcentaje de ciclos detenidos entre la recogida y la transferencia (o almacenamiento en banco).  
+*CycleFertPres*: Porcentaje de ciclos dedicados a preservación de fertilidad.  
+*TransCarrier*: Porcentaje de transferencias con uso de gestación subrogada.  
+*TransFrozEmb*: Porcentaje de transferencias usando embriones congelados.  
+*TransICSI*: Porcentaje de transferencias en las que al menos un embrión procede de ICSI.  
+*TransPGT*: Porcentaje de transferencias en las que al menos un embrión se ha sometido a DGP.  
+*ReasonMale*: Porcentaje de ciclos debidos a factor masculino.  
+*ReasonEndo*: Porcentaje de ciclos debidos a endometriosis.  
+*ReasonTubal*: Porcentaje de ciclos debidos a problemas en las trompas de Falopio.  
+*ReasonOvul*: Porcentaje de ciclos debidos a disfunción ovulatoria.  
+*ReasonUterine*: Porcentaje de ciclos debidos a problemas uterinos.  
+*ReasonPGT*: Porcentaje de ciclos debidos a DGP.  
+*ReasonCarrier*: Porcentaje de ciclos debidos a gestación subrogada.  
+*ReasonDOR*: Porcentaje de ciclos por reserva ovárica disminuida.  
+*ReasonBank*: Porcentaje de ciclos para adición a banco.  
+*ReasonPregLoss*: Porcentaje de ciclos por pérdida recurrente de embarazo.  
+*ReasonOtherInfert*: Porcentaje de ciclos por otras razones de infertilidad.  
+*ReasonNonInfert*: Porcentaje de ciclos por otras razones, no relacionadas con la infertilidad.  
+*ReasonUnexplained*: Porcentaje de ciclos por razones indeterminadas.  
 
 
 # 3. Preguntas objetivo
