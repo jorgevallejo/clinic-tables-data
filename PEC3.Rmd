@@ -20,56 +20,50 @@ The file with the R code have to be delivered as well.
 From a dataset, a statistical study must be carried out using R. The points below can be used as an outline:
 
 ### 1. Look for a dataset related with Biostatistics or Bioinformatics.
-
 Must be public data.
 Explain source of data and include pertinent references. Justify why that specific dataset has been chosen.
 
 ### 2. Display the data.
-
 Using R, display and explain the type of file that has been imported, which variables are included (type, classification,...) and anything else that seems relevant.  
 Include snapshots and R commands used for import and display of the data.
 
 
-### 3. Preguntas objetivo.
-Realizar un mínimo de seis preguntas objetivo que den una idea de la información contenida en el conjunto de datos.
-Pueden estar basadas en el tipo de consultas realizadas en la Sección 2 de la PEC 1.
-También utilizando las definiciones de funciones como se trabaja en el LAB3.
+### 3. Probe questions.
+Make a minimum of six questions that probe the kind of information contained in the dataset.
 
-### 4. Análisis descriptivo de los datos.
-Este estudio debe incluir, como se vio en la Sección 3 de la PEC1, un resumen paramétrico de los datos y diversas representaciones gráficas de los mismos basadas en determinados criterios.
-Gráficos y criterios a elección.
 
-### 5. Probabilidad y simulación.
-Basándoos en los conceptos trabajados en el LAB4 y PEC2, realizad un mínimo de tres cuestiones que respondan a una cuestión de probabilidad y un mínimo de una cuestión que corresponda a un breve modelo de simulación.
+### 4. Descriptive analysis of the data.
+The paper must include a parametric summary of the data and several graphic representations of said data.
 
-### 6. Análisis de regresión
-Realizad un breve análisis de regresión a partir de las variables que disponéis y utilizando el criterio que responda a alguna pregunta de interés que os hayáis planteado.
 
-### 7. Valoración final
-A partir de los datos de origen y el estudio realizado, haced una valoración final:
-¿Disponemos de conclusiones finales?
-¿Sería necesario hacer un análisis más avanzado?
-¿Faltan datos para obtener otro tipo de información como...?
+### 5. Probability and simulation.
+A minimum of three questions answering probability questions and a question corresponding a short simulation model.
 
-## Sección 2
 
-Hasta ahora se han usado datos que correspondían a archivos de tipo texto u hojas de cálculo.
-En este ejercicio hay que realizar un breve estudio acerca de cómo gestionar la información a partir de una base de datos (script SQL,...):
- * Seleccionar una base de datos de libre acceso e importad, desde RStudio, estos datos. Mostrad el código utilizado y el resultado obtenido por pantalla.
+### 6. Regression analysis.
+A brief regression analysis from the variables in the dataset answering some question of interest.
+
+
+### 7. Final assessment.
+Final assessment from source data and papaer:
+Do we have conclussions?
+Would be necessary a more advanced analysis?
+Would be necessary more data for obtaining another kind of information?
+
+
  
- * Realizad un par de consultas, desde RStudio, a partir de estos datos y mostrad el código utilizado y resultado obtenido por pantalla.
- 
-# 1. Conjunto de datos
+# 1. Dataset
 
-[Querría hacer algo con datos de reproducción asistida humana]
+I wanted to do something with data from human assisted reproduction techniques. Those are difficult to find as public datasets, I suppose that it is due to privacy issues.
 
-Finalmente me he decidido por los datos de reproducción asistida de los Estados Unidos publicados en abierto por el CDC:
+Finally, I found public datasets published by the Centers for Disease Control and Prevention (CDC) with several kinds of data from assisted reproduction clinics in the United States:  
 https://www.cdc.gov/art/artdata/index.html
 
-Los datos de años anteriores también se pueden descargar/consultar:
+Other datasets from previous years can be downloaded/looked up as well:  
 https://www.cdc.gov/art/reports/archive.html
 
-# Descarga de los datos de interés
+
+# Datasets downloading
 
 ```{r eval = FALSE}
 
@@ -82,7 +76,7 @@ source_url <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Tabl
 download.file(source_url, destfile = "../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
 ```
 
-También podríamos querer los datos de años anteriores para hacer estudios a lo largo del tiempo:
+This is the dataset I am using for this practise study, but we could want to download datasets from previous years to do longitudinal studies:
 
 ```{r eval = FALSE}
 
