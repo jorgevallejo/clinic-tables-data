@@ -1,29 +1,34 @@
 ---
-title: "PEC 3"
+title: "2017 Clinic Dataset Analysis"
+subtitle: "Assisted reproduction clinics data from the CDC"
 author: "Jorge Vallejo Ortega"
 output:
   md_document: default
   pdf_document: default
 ---
-# PEC 3 - Instrucciones
+# Foreword
+This work is inspired in an exercise from the course 'Software para el análisis de datos' in UOC's degree 'Bioinformática y Bioestadística'.
 
-Para este trabajo se debe utilizar MARKDOWN y entregarlo en Word o Pdf usando Knitr en RStudio.
+I am using this to learn the use of the language R, and the tools RStudio, Git and GitHub. This is not a professional level study of assisted reproduction data from clinics in the USA. If you want to have access to such studies, or even the raw data, you can get them from CDC's webpage [ART's Success Rate Data](https://www.cdc.gov/art/artdata/index.html).
 
-También se debe entregar el fichero de código en R.
 
-## Enunciado
+## Statement
+MARKDOWN will be used for this paper, generating a Pdf report with Knitr in RStudio.
 
-Caso práctico lo más ajustado a la realidad que sea posible y que permita poner en práctica los conceptos principales del curso.
+The file with the R code have to be delivered as well.
 
-A partir de una colección de datos, realizar un estudio estadístico con R. Se pueden seguir los siguientes puntos:
+From a dataset, a statistical study must be carried out using R. The points below can be used as an outline:
 
-### 1. Buscar un conjunto de datos relacionados con la Bioestadística o la Bioinformática (ver enlaces).
-Tienen que ser datos públicos.
-Hay que explicar la procedencia de los datos e incluir las referencias que correspondan, y justificar por qué se han elegido esos datos.
+### 1. Look for a dataset related with Biostatistics or Bioinformatics.
 
-### 2. Mostrar los datos.
-Utilizando R, mostrar y explicar qué tipo de fichero hemos importado, las variables que forman parte de él (tipo, clasificación,...) y todo aquello que parezca relevante.
-Incluir capturas de pantalla y las instrucciones en R que habéis utilizado para importar y mostrar los datos.
+Must be public data.
+Explain source of data and include pertinent references. Justify why that specific dataset has been chosen.
+
+### 2. Display the data.
+
+Using R, display and explain the type of file that has been imported, which variables are included (type, classification,...) and anything else that seems relevant.  
+Include snapshots and R commands used for import and display of the data.
+
 
 ### 3. Preguntas objetivo.
 Realizar un mínimo de seis preguntas objetivo que den una idea de la información contenida en el conjunto de datos.
