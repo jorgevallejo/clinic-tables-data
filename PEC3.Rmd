@@ -258,7 +258,7 @@ From those 165 variables, 17 are character strings, 25 are integers and 123 are 
 
 Character variables correspond to descriptive data as: clinic name, city of the clinic, state, name of the medical director, and the disponibility of several services(oocyte donation, embryo donation, oocyte cryopreservation, embryo cryopreservation, services for single women, gestational carriers, if the clinic is a member of SART (Society for Assisted Reproductive Technology), and if the clinic owns an accredited embryology laboratory). Many of these variables will work as factors.
 
-Variables of type `integer`are:
+Variables of type `integer`are:  
 *OrderID*: unique identifier for each register.  
 *ND_NumIntentRet*: number of intended oocyte retrievals (excluyendo donors). As in most of numerical variables in this table, this one is divided into five age categories, from less than 35 years old to more than 43 years old.  
 *ND_NumRetrieve*: number of oocyte retrievals (excluding donors). It doesn't match with intended retrievals because, sometimes, it is necessary to stop the retrieval process or a particular process is not successful.  
@@ -267,7 +267,7 @@ Variables of type `integer`are:
 *TotNumCycles*: total number of cycles. In assisted reproduction, the cycles include any process in which at least one of this conditions happen; 1) an assisted reproduction process is carried out, 2) the patient is subjected to ovarian stimulation or monitoring with the intent of having an ART procedure, or 3) frozen embryos have been thawed with the intent of transferring them to a patient.  
 *NumResearch*: number of excluded cycles for research.  
 
-Numeric variables are:
+Numeric variables are:  
 *ND_IntentRetLB*: Percentage of intended oocyte retrievals resulting in live births (exluding donors).  
 *ND_IntentRetSingleLB*: Percentage of intended oocyte retrievals resulting in singleton live births (excluding donors).  
 *ND_RetrieveLB*: Percentage of oocyte retrievals resulting in live births (excluding donors).  
