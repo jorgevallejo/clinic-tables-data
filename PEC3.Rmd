@@ -124,16 +124,17 @@ for (year in years){
 }
 ```
 
-# 2. Mostrar los datos
 
-The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ contiene datos de tratamientos de reproducción in vitro procedentes de 448 clínicas de Estados Unidos recogidos durante el año 2017. It is an Excel workbook containing four sheets:
+# 2. Display data
 
-**National Summary Data**. Datos agregados de todas las clínicas incluidas en el informe.
-**National Table Dictionary**. Tabla-diccionario con la explicación de cada variable presente en la tabla anterior.
-**Clinic Table Data Records**. Tabla con los datos desglosados de cada clínica.
-**Clinic Table Dictionary**.  Tabla-diccionario con la explicación de cada variable presente en la tabla de clínicas.
+The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from assisted reproduction treatments from 448 US clinics, collected during 2017. It is an Excel workbook containing four sheets:
 
-Los datos que me interesan son los desglosados por clínica, así que importaré los datos de las hojas **Clinic Table Dictionary** y **Clinic Table Data Records**.
+**National Summary Data**. Aggregated data from all the clinics included in the report.  
+**National Table Dictionary**. Dictionary-table with the explanation for each variable in the previous table.  
+**Clinic Table Data Records**. Tabla with data broke down by clinic.  
+**Clinic Table Dictionary**.  Dictionary-table explaining each variable from Clinic Table.  
+
+I am interested in the data broke down by clinic. Therefore, I will import the data from sheets **Clinic Table Dictionary** and **Clinic Table Data Records**.
 
 ```{r}
 require("xlsx")
@@ -143,9 +144,8 @@ clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 
 
 View(clinic_dictionary)
 
-# En el visor, en la columna Age los símbolos '>=' aparecen como '=',
-# pero si pedimos que nos imprima la columna en pantalla sí muestra los
-# símbolos adecuados.
+# In Viewer, in the column Age the symbols '>=' are displayed as '=',
+# but if we print the column to screen the correct symbols are displayed.
 
 clinic_data <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 3
                          , encoding = "UTF-8", stringsAsFactors=FALSE)
@@ -153,19 +153,21 @@ View(clinic_data)
 
 ```
 
-Veamos cómo ha quedado codificada cada variable:
+Let's see how each variable has been codified:
 
 ```{r}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
-En la estructura podemos observar un problema de esta fuente de datos. Los porcentajes y ratios aparecen como texto, no como números. Va a ser necesario preprocesar los datos de la tabla antes de trabajar con ellos.
 
-¿Por qué hay variables numéricas que se detectan como texto? En el caso de las ratios está claro, contienen signos ("%", "/", "<") que no son números. ¿Y el resto?
+In the structure can be seen a problem from this data source. Percentages and ratios are
+coded as text, not as numbers. It will be necessary pre-process the data from the table before we can work with them.
 
-Ordenaremos alfabéticamente las columnas, a ver si encontramos algo extraño.
+Why numeric variables are detected  as characters. Ratios contain non-numeric symbols ("%", "/", "<"). What's the problem with the rest?
 
-Primero de todo y para evitar problemas posteriores, vamos a cambiar los valores vacíos por `NA`:
+We will order alphabetically each column, see what happens.
+
+First of all, to avoid problems down the line, we will change null values in the table for `NA`:
 
 ```{r}
 clinic_data[clinic_data==""] <- NA
@@ -173,7 +175,7 @@ clinic_data[clinic_data==""] <- NA
 View(clinic_data)
 ```
 
-Si ordenamos los valores de las columnas, vemos que hay columnas de números enteros en las que los miles están marcados con una coma (`,`).
+Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (`,`).
 
 ```{r}
 ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
@@ -182,19 +184,19 @@ View(ordenadas)
 
 ```
 
-A continuación corregiremos las variables que deberían ser `integer` o `numeric`.
+Next, we will correct those variables that should be `integer` o `numeric`.
 
-Adaptado de una pregunta que he encontrado en Stack Overflow:
+Code adapted from a question in Stack Overflow:
 [How to read data when some numbers contain commas as thousand separator?](https://stackoverflow.com/questions/1523126/how-to-read-data-when-some-numbers-contain-commas-as-thousand-separator)
 
 ```{r}
-# Vectores que hacen referencia a las columnas que deberían ser números enteros
-# y las que deberían ser ratios.
+# Vectors that refer the columns that should be integers
+# and the columns that should be ratios.
 
 integers <- c(7:11, 22:26, 37:41, 82:85, 94:99, 163)
 ratios <- c(12:21, 27:36, 42:81, 86:93, 100:154)
 
-# Preprocesamos las columnas con enteros para eliminar el símbolo "," en los miles.
+# Pre-processing columns with integers deleting "," symbol.
 clinic_data[, integers] <- lapply(clinic_data[, integers],
                                   function(x){
                                     as.integer(gsub(",", "", x))
@@ -203,54 +205,58 @@ clinic_data[, integers] <- lapply(clinic_data[, integers],
 str(clinic_data[, integers])
 ```
 
-Preprocesar las columnas de ratios es algo más complejo. Es necesario lidiar con tres casos diferentes:
+Pre-processing the columns with rations is a bit more complex. It is necessary to deal with three different cases:
 
-1) Los datos <1%. Como no puedo conocer el valor real, lo que haré es elegir arbitrariamente el valor 0.5% que expresaré como una ratio de 0.005.
+1) Data as <1%. Since we don't have the real value, what I will do is arbitrarily chose
+the value 0.5%, expressed as 0.005 ratio.
 
-2) Datos que incluyen el símbolo "%". Misma estrategia que con los números enteros; eliminaré el símbolo con gsub. Además dividiré el resultado entre 100 para que todos los números sean ratios (tantos por uno).
+2) Data including "%" symbol. Same strategy that we followed with integers;
+I will remove the symbol with `gsub`. Besides, I will divide the result by 100, making all numbers a ratio (parts per unit).
 
-3) Datos que son fracciones. Esto es un pelín más complicado. Con expresiones regulares aislaré en numerador y el denominador y devolveré el resultado de la división.
+3) Data as fractions. Even a bit more complex. I will use regular expressions to isolate numerator and denominator, and will return the result of the division as a ratio.
 
 ```{r}
-# Esta función procesa las ratios que aparecen como fracciones.
+# This function process ratios expressed as fractions.
 divide <- function(x){
-  numerador <- as.numeric(gsub(" .*$", "", x))
-  denominador <- as.numeric(gsub("^.*/ ", "", x))
-  return (numerador / denominador)
+  numerator <- as.numeric(gsub(" .*$", "", x))
+  denominator <- as.numeric(gsub("^.*/ ", "", x))
+  return (numerator / denominator)
 }
 
-# Esta es la función principal para procesar las ratios de texto a números.
-# Aparecerán avisos de 'NA introduced by coercion' debido a las celdas en blanco.
+# This is the main functios for processing ratios from characters to numbers.
+# Expect the appearance of several warnings of 'NA introduced by coercion' due to multiple # data points represented as 'NA' in characters which the function is unable to deal with.
 numerizador <- function(dato){
     ifelse (dato == "<1%", 0.005,
             ifelse ((grepl("%", dato) == TRUE), as.numeric(gsub("%", "", dato))/100,
                     ifelse ((grepl("/", dato)==TRUE), divide(dato), as.numeric(dato))))
 }
-# La función ifelse es necesaria para trabajar con vectores de longitud >1.
+# The function 'ifelse' is needed for working with vectors of length >1.
 
-# Preprocesamiento de las ratios:
+# Pre-processing ratios:
 clinic_data[, ratios] <- lapply(clinic_data[, ratios], numerizador)
-# Al aplicarla aparecen multitud de avisos de 'NAs introduced by coercion'
-# Creo que se debe a que los "NA" están almacenados como texto, pero no estoy seguro.
-# He sido incapaz de corregirlo. Se puede evitar que salte el aviso, pero no me gusta
-# enmascarar la aparición de avisos de error.
+# When using this expression, multiple warnings of 'NAs introduced by coercion' appear.
+# I think it is due to "NA" being stored as character strings.
+# I haven't been able to correct it yet. It is possible to avoid the raise of the warning,
+# but I don't feel comfortable masking error warnings.
 
 str(clinic_data[, ratios], list.len = length(clinic_data[, ratios]))
 
 ```
 
-Los avisos de `NAs introduced by coercion` no estoy seguro de por qué aparecen. Sospecho que los valores `NA` de la tabla están guardados como texto, no como NA y por eso aparece el aviso.
+I am not sure about why all those `NAs introduced by coercion` appear. I suspect it is because `NA` values in the table are stored as text.
 
 
-## Variables: tipo y descripión
+## Variables: type and description
 
-Es posible que me haya dejado llevar por la emoción escogiendo un fichero demasiado grande para empezar. La tabla contiene 165 variables. No es un número descabellado pero quizá sea poco manejable para el objetivo de este ejercicio.
+I might have allowed myself to get carried along in passion choosing a file too big. The table contains 165 variables. It is not a ridiculous number, but may be not easy enough to handle for the scope of this study.
 
 ```{r}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
-De las 165 variables; 17 son cadenas de texto, 25 son números enteros y 123 son números no enteros.
+From those 165 variables, 17 are character strings, 25 are integers and 123 are non-integer numbers.
+
+
 
 Las variables de texto corresponden a datos descriptivos como: nombre de la clínica, ciudad en la que se ubica, estado, nombre del director médico y si dispone o no de una serie de servicios (donación de óvulos, donación de embriones, programa de criopreservación de óvulos, programa de criopreservación de embriones, si atienden a mujeres solteras, servicio de maternidad subrogada, si la clínica es miembro de la SART (Society for Assisted Reproductive Technology) y si dispone de un laboratorio de embriología acreditado). Muchas de estas variables funcionarán como factores.
 
