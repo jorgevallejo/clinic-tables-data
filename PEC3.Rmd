@@ -306,61 +306,60 @@ Numeric variables are:
 
 # 3. Probe questions
 
-Resumen numérico básico del número total de ciclos por hospital (sin tener en cuenta la edad de la paciente):
+Basic numeric summary for the total number of cycles by clinic (withouth taking patient age into account):
 ```{r}
-# Resumen numérico básico
-estadisticos <- c("media", "min.", "max.", "desv.estandar", "C.V.", "25%", "50%", "75%")
+# Basic numeric summary
+statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
 variables <- c("TotNumCyclesAll")
 df <- clinic_data
 est_vector <- c()
 
 for (var in variables) {
-  df_subset <- df[,var] # Extraigo la columna de valores correspondiente a la variable
-  var_sd <- sd(df_subset, na.rm=TRUE) # desviación estándar
-  var_mean <- mean(df_subset, na.rm = TRUE) # media
+  df_subset <- df[,var] # Extracts column corresponding to the variable
+  var_sd <- sd(df_subset, na.rm=TRUE) # standard deviation
+  var_mean <- mean(df_subset, na.rm = TRUE) # average
   var_min <- min(df_subset,na.rm = TRUE)
   var_max <- max(df_subset, na.rm = TRUE)
-  var_CV <- var_sd/var_mean # coeficiente de variación
+  var_CV <- var_sd/var_mean # coefficient of variation
   var_percentile <- quantile(df_subset, probs=c(0.25, 0.5, 0.75), names=FALSE, na.rm = TRUE) # percentiles
-  est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Voy añadiendo todos los resultados a un mismo vector.
+  est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Adding all results to the same vector.
   }
 
-# Convierto el vector con todos los resultados en una matriz, y esta en una dataframe.
-testmatrix <- matrix(data=est_vector, ncol=length(estadisticos), byrow = TRUE, 
-                     dimnames = list(variables, estadisticos))
+# Transform the vector with all the results into a matrix, and that into a dataframe.
+testmatrix <- matrix(data=est_vector, ncol=length(statistics), byrow = TRUE, 
+                     dimnames = list(variables, statistics))
 testdf <- as.data.frame(testmatrix)
 
 testdf
 ```
 
-Histograma de frecuencia mostrando número de transferencias procedentes de donante. Cuatro gráficas represenando el punto de partida: ovocito fresco, congelado, embrión congelado y embrión donado (en los otros tres casos la donación es el ovocito, no el embrión).
+Frequency histogram displaying number of transfers from donor. Four graphs, each one for each of the starting states: fresh oocyte, frozen oocyte, frozen embryo, and donated embryo (in the other three cases it is only the oocyte which comes from a donor).
 
 ```{r}
-par(mfrow = c(2, 2)) # generamos un array de 2x2 para dibujar las gráficas.
+par(mfrow = c(2, 2)) # generate a 2x2 array for printing the graphs.
 
-xlab <- "Transferencias por hospital"
-ylab <- "Frecuencia"
+xlab <- "Transfers by clinic"
+ylab <- "Frequency"
 
 hist(clinic_data$Donor_NumTrans1,
-     main = "Embrión fresco de ovocito fresco", xlab = xlab, ylab = ylab, col = "blue")
+     main = "Fresh embryo from fresh oocyte", xlab = xlab, ylab = ylab, col = "blue")
 hist(clinic_data$Donor_NumTrans2,
-     main = "Embrión fresco de ovocito congelado", xlab = xlab, ylab = ylab, col = "tomato")
+     main = "Fresh embryo from frozen oocyte", xlab = xlab, ylab = ylab, col = "tomato")
 hist(clinic_data$Donor_NumTrans3,
-     main = "Embrión congelado", xlab = xlab, ylab = ylab, col = "yellow")
+     main = "Frozen embryo", xlab = xlab, ylab = ylab, col = "yellow")
 hist(clinic_data$Donor_NumTrans4,
-     main = "Embrión donado", xlab = xlab, ylab = ylab, col = "green")
+     main = "Embryo from donor", xlab = xlab, ylab = ylab, col = "green")
 
 
 ```
 
-Uno de los datos que se nos ofrece es el estado de la acreditación del laboratorio de embriología. Para este tipo de datos puede ser más útil una tabla que una gráfica:
-
+One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more usseful than a graph:
 
 ```{r}
 table(clinic_data$LabAccred)
 ```
 
-En cambio sí que nos puede resultar más interesante ver en una gráfica otro tipo de datos cualitativos. Por ejemplo, cuántas clínicas que ofrecen servicio de reproducción asistida hay en cada estado.
+Nevertheless, for other qualitative data we could find more interesting to display them in a graph. For example, how many clinics offer ART, by state.
 
 ```{r}
 # Most of this code I adapted it from:
@@ -390,18 +389,18 @@ intended_retrievals[intended_retrievals == 0] <- 1
 
 boxplot(intended_retrievals,
         log = "y",
-        yaxt = "n",  # No dibuja los ticks del eje y.
+        yaxt = "n",  # Don't draw the ticks in y axis.
         xlab = "Age groups",
         ylab = "Intended Retrievals by Clinic",
         main = "Intended Retrievals by Clinic and Age Group",
         names = c("<35", "35-37", "38-40", "41-42", ">=43"))
 
-# establece los límites del eje y a partir del logaritmo en base 10
-# de los valores máximos y mínimos del dataframe.
+# Establishes limits for y axis and, from base 10 logarithm,
+# max and min values of the dataframe.
 y1 <- floor(log10(range(intended_retrievals))) 
-# Vector con los valores enteros desde el mínimo al máximo del eje.
+# Vector with integer values from minimum to maximum for the axis.
 pow <- seq(y1[1], y1[2]+1)
-# Vector con las posiciones de los ticks.
+# Vector with ticks' positions.
 ticksat <- as.vector(sapply(pow, function(p) (1:10)*10^p))
 # Drawing the axis (main ticks)
 axis(2, 10^pow)
@@ -411,7 +410,7 @@ axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
 
 I suspect that the median diminishes with age group because donor eggs are prefered for older women instead of retrieval of their own eggs.
 
-De la misma forma, nos podemos preguntar qué porcentaje de intentos de recogida de ovocitos da lugar a nacidos vivos. Eso nos orientaría un poco en la pregunta de si vale la pena recoger ovocitos de las pacientes cuando son de edad relativamente avanzada.
+Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
 ```{r}
 # To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
@@ -426,9 +425,10 @@ boxplot(pct_int_ret,
 
 ```
 
-Como sospechábamos, este gráfico muestra un descenso muy acusado en el ratio de intentos de recogida de ovocitos resultantes en nacidos vivos si tenemos en cuenta el grupo de edad de la madre.
+As was suspected, this graph shows a marked descent in the ratio of intended oocyte retrieval resulting in live births when taking into account the age group of the patient.
 
-# 4. Análisis descriptivo
+
+# 4. Descriptive analysis
 
 En esta sección llevaremos a cabo una exploración más exhaustiva de nuestras variables, incluyendo un resumen paramétrico de los datos y representaciones gráficas.
 
@@ -462,13 +462,13 @@ Resumen descriptivo de las variables numéricas:
 ```{r}
 
 variables <- colnames(clinic_data[c(7:154, 163)])
-estadisticos <- c("media", "min.", "max.", "desv.estandar", "C.V.", "25%", "50%", "75%")
+statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
 est_vector <- c()
 
 for (var in variables) {
     df_subset <- clinic_data[,var] # Extraigo la columna de valores correspondiente a la variable
     var_sd <- sd(df_subset, na.rm=TRUE) # desviación estándar
-    var_mean <- mean(df_subset, na.rm = TRUE) # media
+    var_mean <- mean(df_subset, na.rm = TRUE) # average
     var_min <- min(df_subset,na.rm = TRUE)
     var_max <- max(df_subset, na.rm = TRUE)
     var_CV <- var_sd/var_mean # coeficiente de variación
@@ -477,8 +477,8 @@ for (var in variables) {
   }
   
   # Convierto el vector con todos los resultados en una matriz, y esta en una dataframe.
-  testmatrix <- matrix(data=est_vector, ncol=length(estadisticos), byrow = TRUE, 
-                       dimnames = list(variables, estadisticos))
+  testmatrix <- matrix(data=est_vector, ncol=length(statistics), byrow = TRUE, 
+                       dimnames = list(variables, statistics))
   testdf <- as.data.frame(testmatrix)
   
   testdf
