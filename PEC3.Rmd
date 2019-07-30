@@ -430,24 +430,24 @@ As was suspected, this graph shows a marked descent in the ratio of intended ooc
 
 # 4. Descriptive analysis
 
-En esta sección llevaremos a cabo una exploración más exhaustiva de nuestras variables, incluyendo un resumen paramétrico de los datos y representaciones gráficas.
+In this section we will accomplish a more thorough exploration of our variables, including a parametric summary of data, and graphic representations.
 
-## Servicios
+## Services
 
-Un sumario de los servicios ofrecidos por las clínicas.
+Summary of services offered by the clinics.
 
 ```{r}
-# Columnas que contienen los datos de los servicios: 155-160 y 162
+# Columns including the data for the services: 155-160 and 162.
 services <- clinic_data[c(155:160, 162)]
 
-# nombres de variables:
-services_names <- c("Donación de ovocitos",
-  "Donación de embriones",
-  "Criopreservación de embriones",
-  "Criopreservación de ovocitos",
-  "Atención a mujeres solteras",
-  "Gestación subrogada",
-  "Laboratorio de embriología")
+# Variables' names:
+services_names <- c("Oocyte donation",
+  "Embryo donation",
+  "Embryo cryopreservation",
+  "Oocyte cryopreservation",
+  "Services for single women",
+  "Gestational carriers",
+  "Accredited embryo laboratory")
 
 colnames(services) <- services_names
 
@@ -455,9 +455,9 @@ lapply(services, table)
 
 ```
 
-## Resultados de las técnicas de reproduccion
+## Results from assisted reproduction techniques
 
-Resumen descriptivo de las variables numéricas:
+Descriptive summary of numeric variables:
 
 ```{r}
 
@@ -466,17 +466,17 @@ statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%
 est_vector <- c()
 
 for (var in variables) {
-    df_subset <- clinic_data[,var] # Extraigo la columna de valores correspondiente a la variable
-    var_sd <- sd(df_subset, na.rm=TRUE) # desviación estándar
+    df_subset <- clinic_data[,var] # Extract value column for the corresponding variable
+    var_sd <- sd(df_subset, na.rm=TRUE) # standard deviation
     var_mean <- mean(df_subset, na.rm = TRUE) # average
     var_min <- min(df_subset,na.rm = TRUE)
     var_max <- max(df_subset, na.rm = TRUE)
-    var_CV <- var_sd/var_mean # coeficiente de variación
+    var_CV <- var_sd/var_mean # coefficient of variation
     var_percentile <- quantile(df_subset, probs=c(0.25, 0.5, 0.75), names=FALSE, na.rm = TRUE) # percentiles
-    est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Voy añadiendo todos los resultados a un mismo vector.
+    est_vector = c(est_vector, var_mean, var_min, var_max, var_sd, var_CV, var_percentile) # Adding all results to the same vector.
   }
   
-  # Convierto el vector con todos los resultados en una matriz, y esta en una dataframe.
+  # Transform the vector with all the results into a matrix, and that into a dataframe.
   testmatrix <- matrix(data=est_vector, ncol=length(statistics), byrow = TRUE, 
                        dimnames = list(variables, statistics))
   testdf <- as.data.frame(testmatrix)
@@ -485,7 +485,7 @@ for (var in variables) {
 
 ```
 
-## Representaciones gráficas
+## Graphic representations
 
 ### Retrievals
 
@@ -500,15 +500,15 @@ log_boxplot <- function(x, ...){
 
   boxplot(x,
         log = "y",
-        yaxt = "n",  # No dibuja los ticks del eje y.
+        yaxt = "n",  # Do not draw ticks in y axis.
         ...) # Additional arguments to be passed to the function boxplot.
 
-# establece los límites del eje y a partir del logaritmo en base 10
-# de los valores máximos y mínimos del dataframe.
+# Establishes limits for y axis and, from base 10 logarithm,
+# max and min values of the dataframe.
   y1 <- floor(log10(range(x))) 
-# Vector con los valores enteros desde el mínimo al máximo del eje.
+# Vector with integer values from minimum to maximum for the axis.
   pow <- seq(y1[1], y1[2]+1)
-# Vector con las posiciones de los ticks.
+# Vector with ticks' positions.
   ticksat <- as.vector(sapply(pow, function(p) (1:10)*10^p))
 # Drawing the axis (main ticks)
   axis(2, 10^pow)
@@ -553,7 +553,7 @@ I have had some problems with this image. Labels and points are more little than
 
 **Transfer** is a procedure in which an embryo is transferred, from laboratory culture, to the uterus.
 
-Live above, we will represent number of transfers, percentage of transfers resulting in live births, and those resulting in singleton live births.
+Like above, we will represent number of transfers, percentage of transfers resulting in live births, and those resulting in singleton live births.
 
 ```{r fig.height = 15, fig.width = 8}
 
