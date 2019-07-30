@@ -5,6 +5,10 @@ author: "Jorge Vallejo Ortega"
 output:
   md_document: default
   pdf_document: default
+# Next is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding,
+  output_format = "all") })
 ---
 # Foreword
 This work is inspired in an exercise from the course 'Software para el análisis de datos' in UOC's degree 'Bioinformática y Bioestadística'.
