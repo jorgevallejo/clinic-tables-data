@@ -509,7 +509,7 @@ log_boxplot <- function(x, ...){
 
 # Establishes limits for y axis and, from base 10 logarithm,
 # max and min values of the dataframe.
-  y1 <- floor(log10(range(x))) 
+  y1 <- floor(log10(range(x, na.rm = TRUE))) 
 # Vector with integer values from minimum to maximum for the axis.
   pow <- seq(y1[1], y1[2]+1)
 # Vector with ticks' positions.
@@ -552,6 +552,63 @@ boxplot(clinic_data[c(32:36)],
 
 I have had some problems with this image. Labels and points are more little than I wanted, but at least I have managed to include all three graphs into the same image.
 
+**Intended egg retrievals** take into account even those retrievals that failed because the procedure had to be interrupted, because no egg were retrieved or due to other causes.
+
+There are some statistics associated to the intended egg retrievals:
+
+```{r fig.height = 30, fig.width = 8}
+
+par(mfcol = c(6, 1))
+
+# Number of intended egg retrievals per live birth
+x <- clinic_data[,52:56]
+log_boxplot(x,xlab = "Age groups", ylab = "Intended Egg Retrievals",
+        main = "Number of Intended Egg Retrievals by Clinic and Age Group",
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
+
+# Ratio of new patients with live births after 1 intended egg retrieval
+boxplot(clinic_data[c(57:61)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of New Patients with Live Births After One Intended Egg Retrieval by Clinic and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "lightgoldenrod1")
+
+# Ratio of new patients with live births after 1 or 2 intended egg retrievals
+boxplot(clinic_data[c(62:66)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of New Patients with Live Births After One or Two Intended Egg Retrieval by Clinic and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+
+# Ratio of new patients with live births after all intended egg retrievals
+boxplot(clinic_data[c(67:71)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of New Patients with Live Births After All Intended Egg Retrieval by Clinic and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+
+# Average number of intended retrievals per new patient
+boxplot(clinic_data[c(72:76)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Average Number of Intended Retrievals per New Patient by Clinic and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+
+# Average number of transfers per intended retrievals
+boxplot(clinic_data[c(77:81)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Average Number of Transfers per Intended Retrieval per New Patient by Clinic and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+```
+
+Also in this set of variables the effect of the age group seems clear in all of them.
 
 ## Transfers
 
@@ -590,3 +647,4 @@ boxplot(clinic_data[c(47:51)],
 Look at the median value of the percentage of transfers resulting in live births for the >=43 years age group. It is zero. If we look up the value of the mean, it is a just bit better with 0.11.
 
 All in all, even the median ratio for the youngest age group is not that great, a tad under 0.5 (0.48).
+
