@@ -735,3 +735,18 @@ Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$Cycle
 For anyone interested, a quick query in a serch engine provides us with the website of the clinic:
 <https://extendfertility.com/>
 
+
+## Cancelled cycles by age
+
+```{r fig.width = 8}
+
+# Cancelled cycles by age group
+boxplot(clinic_data[c(100:104)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Cancelled Cycles by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+```
+
+The median doesn't really change between the age groups; the distribution of the data points, though, keeps growing with the age of the patients.
