@@ -738,6 +738,8 @@ For anyone interested, a quick query in a serch engine provides us with the webs
 
 ## Cancelled cycles by age
 
+Cancelled cycles are cycles that have been started but where cancelled prior to the retrieval of fresh eggs or the thawing of cryopreserved eggs. Here, we want to see if the age of the patient may have any effect on the ratio of cancelled cycles.
+
 ```{r fig.width = 8}
 
 # Cancelled cycles by age group
@@ -746,7 +748,45 @@ boxplot(clinic_data[c(100:104)],
         ylab = "Ratio",
         main = bquote("Ratio of Cancelled Cycles by Hospital and Age Group"),
         names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
+```
+
+The median doesn't really change between the age groups; the distribution of the data points, though, keeps expanding with the age of the patients.  
+Also, keep in mind that the ratio is not of the total of cycles, but the cycles for each age group.
+
+
+##Stopped cycles by age
+
+Stopped cycles are those cycles that started but where cancelled between retrieval and transfer (or banking). We will visualize these data to see if the age of the patient may have an effect on the ratio of stopped cycles.
+
+```{r fig.width = 8}
+
+# Stopped cycles by age group
+boxplot(clinic_data[c(106:110)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Stopped Cycles by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "lightgoldenrod1")
+```
+
+This graphic is similar to that of cancelled cycles by age. There is no much difference in the median of the different groups, but the distribution grows wider with the age of the patient, especially that of the outliers.
+
+
+## Fertility preservation cycles
+
+Fertility preservation cycles are those started with the intent to freeze all resulting eggs or embryos for 12 months or longer in order to preserve future fertility. Let's see which age group makes more use of this tool.
+
+```{r fig.width = 8}
+
+# Stopped cycles by age group
+boxplot(clinic_data[c(112:116)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Fertility Preservation Cycles by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
         col = "coral")
 ```
 
-The median doesn't really change between the age groups; the distribution of the data points, though, keeps growing with the age of the patients.
+This case shows an interesting trend in which the medians are slightly higher in the groups ranging 35 to 42 years old patients; the distribution of the data is quite narrow around the median in all groups; and the distribution in the group of patients older than 43 year has almost collapsed on the value of the median (0.0). Nevertheless, there is an impressive quantity of high outliers in every group (an outlier here taken as any data point more than 1.5 times the length of the box).  
+That trend in these distributions is more or less expected since patients of more age would prefer to achieve pregnancy as soon as possible instead of saving eggs for the future. While younger patients may be still developing their professional careers and would want to preserve good quality eggs for later in life. Also, if the cause to wanting to store the eggs is related to an illness, older women are more probable to have already had children, while younger women may not, and then would want to store healthy egg before a treatment that could sterilize them.
