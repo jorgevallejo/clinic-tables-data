@@ -589,7 +589,7 @@ boxplot(clinic_data[c(67:71)],
         ylab = "Ratio",
         main = bquote("Ratio of New Patients with Live Births After All Intended Egg Retrieval by Clinic and Age Group"),
         names = c("<35", "35-37", "38-40", "41-42", ">=43"),
-        col = "coral")
+        col = "darkseagreen")
 
 # Average number of intended retrievals per new patient
 boxplot(clinic_data[c(72:76)],
@@ -597,7 +597,7 @@ boxplot(clinic_data[c(72:76)],
         ylab = "Ratio",
         main = bquote("Average Number of Intended Retrievals per New Patient by Clinic and Age Group"),
         names = c("<35", "35-37", "38-40", "41-42", ">=43"),
-        col = "coral")
+        col = "aliceblue")
 
 # Average number of transfers per intended retrievals
 boxplot(clinic_data[c(77:81)],
@@ -605,7 +605,7 @@ boxplot(clinic_data[c(77:81)],
         ylab = "Ratio",
         main = bquote("Average Number of Transfers per Intended Retrieval per New Patient by Clinic and Age Group"),
         names = c("<35", "35-37", "38-40", "41-42", ">=43"),
-        col = "coral")
+        col = "lightgoldenrod1")
 ```
 
 Also in this set of variables the effect of the age group seems clear in all of them.
@@ -647,4 +647,91 @@ boxplot(clinic_data[c(47:51)],
 Look at the median value of the percentage of transfers resulting in live births for the >=43 years age group. It is zero. If we look up the value of the mean, it is a just bit better with 0.11.
 
 All in all, even the median ratio for the youngest age group is not that great, a tad under 0.5 (0.48).
+
+
+**Transfers from a donor** is a possibility when the own oocytes from the patient can not be used.
+
+```{r fig.height = 15, fig.width = 8}
+
+par(mfcol = c(3, 1))
+
+# Number of transfers from donor
+x <- clinic_data[,82:85]
+log_boxplot(x,xlab = "Groups", ylab = "Number of transfers",
+        main = "Number of Transfers from Donor by Clinic and Age Group",
+        names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
+        col = "aliceblue")
+
+# Ratio of transfers resulting in live births
+boxplot(clinic_data[c(86:89)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers from Donor Resulting in Live Births \nby Hospital and Age Group"),
+        names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
+        col = "lightgoldenrod1")
+
+# Ratio of transfers resulting in singleton live births
+boxplot(clinic_data[c(90:93)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers from Donor Resulting in Singleton Live Births \nby Hospital and Age Group"),
+        names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
+        col = "coral")
+```
+
+We see than the most common source of transfer from donor is the frozen embryo. It makes sense, since it does not require to coordinate egg retrieval from the donor with patient's receptivity.
+
+On the other hand, there does not seem to be much difference in the ratio of live births between the different sources (fresh or frozen egg, frozen embryo, and donated embryo).
+
+## Number of cycles
+
+ART cycles start when a woman begins taking fertility drugs or having her ovaries monitored for follicle production. If eggs are produced, the cycle progresses to egg retrieval. The eggs are combined with sperm to create embryos and at least one embryo is selected for transfer. If implantation of the embryo occurs, the cycle may progress to clinical pregnancy and sometimes live birth.  
+Keep in mind that the woman may not necessarily be the patient, but a donor. The egg may be frozen and thawed before fertilization, or the embryo may be frozen and thawed before implantation.
+
+```{r fig.width = 8}
+
+# Total number of cycles by age group
+x <- clinic_data[,94:98]
+log_boxplot(x,xlab = "Age groups", ylab = "Number of cycles",
+        main = "Number of Cycles by Clinic and Age Group",
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
+```
+
+This results -in a way- have surprised me, since I was expecting more cycles for the higher age groups. It does not seem to be the case, although we don't know if the differences are significative.
+
+## Fate of the cycles
+
+Not all cycles end successfully, and not all cycles are started to achieve pregnancy. Sometimes the cycles are cancelled and no eggs are retrieved, or the eggs are lost without being used or stored. Sometimes, the aim of the cycles is not immediately looking for a pregnancy, but storing eggs as a precaution against an estimated loss of fertility (due to illness or age).  
+
+In the dataset we have three of such cases: Cycles canceled prior to retrieval or thaw, cycles stopped between retrieval and transfer or banking, and cycles for fertility preservation.
+
+```{r fig.width = 8}
+
+# Fate of cycles
+boxplot(clinic_data[c(105, 111, 117)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Cycles Interrupted Before Transfer"),
+        names = c("Canceled", "Stopped", "Fertility preservation"),
+        col = "lightgoldenrod1")
+```
+
+It is curious that cycles for fertility preservation are the less common ones, but there is a clinic in which most of the cycles are performed for such an end.
+
+We can easily extract the name and other data of the clinic from the database:
+
+```{r}
+preserv_clinic <- clinic_data[clinic_data$CycleFertPresAll > 0.8,]
+
+```
+
+Clinic: `r noquote(preserv_clinic$CurrentClinicName1)`
+City: `r noquote(preserv_clinic$CurrentClinicCity)`
+State: `r noquote(preserv_clinic$CurrentClinicState)`
+Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`
+Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
+
+For anyone interested, a quick query in a serch engine provides us with the website of the clinic:
+<https://extendfertility.com/>
 
