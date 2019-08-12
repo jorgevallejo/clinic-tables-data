@@ -683,6 +683,30 @@ We see than the most common source of transfer from donor is the frozen embryo. 
 
 On the other hand, there does not seem to be much difference in the ratio of live births between the different sources (fresh or frozen egg, frozen embryo, and donated embryo).
 
+
+## Gestational carriers, frozen embryos and ICSI
+
+A *gestational carrier* is a woman who gestates an embryo originated from the egg of another woman. The expectation is that the newborn will be given to another woman or couple. People who use gestational carriers my include women with no uterus or women who cannot carry a pregnancy due to health problems; also, gay couples.
+
+*Frozen embryos* are embryos obtained by IVF (in vitro fertilization) that have been cryopreserved.
+
+*ICSI* (intracytoplasmatic sperm injection) is a technique of IVF in which a sperm in injected directly into the egg.
+
+In the next graph we will represent the data of the ratio of transfers that use a gestational carriers, those that use frozen embryos, and those in which at least one embryo has been obtained by ICSI:
+
+```{r fig.width = 8}
+
+# Ratio of transfers (gestational carriers, frozen embryos, ICSI)
+boxplot(clinic_data[c(123, 129, 135)],
+        xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Using Gestational Carriers, Frozen Embryos, or ICSI"),
+        names = c("Gestational Carriers", "Frozen Embryos", "ICSI"),
+        col = "aliceblue")
+```
+
+Seen the data represented, we can see that [gestational carriers minority; frozen embryos and icsi are very used]
+
 ## Number of cycles
 
 ART cycles start when a woman begins taking fertility drugs or having her ovaries monitored for follicle production. If eggs are produced, the cycle progresses to egg retrieval. The eggs are combined with sperm to create embryos and at least one embryo is selected for transfer. If implantation of the embryo occurs, the cycle may progress to clinical pregnancy and sometimes live birth.  
