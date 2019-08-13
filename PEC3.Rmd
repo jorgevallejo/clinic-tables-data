@@ -705,7 +705,63 @@ boxplot(clinic_data[c(123, 129, 135)],
         col = "aliceblue")
 ```
 
-Seen the data represented, we can see that [gestational carriers minority; frozen embryos and icsi are very used]
+Seen the data represented, we can say that gestational carrier transfers are a minority in most of the clinics, with notable exceptions. On the other hand, both the use of frozen embryos, and the ICSI technique are normalized and very frequent.
+
+I was wondering about those two clinics with a ratio higher than 0.6 of transfers to gestational carriers.
+
+```{r}
+carrier_clinic <- clinic_data[clinic_data$TransCarrierAll > 0.6,]
+
+carrier_clinic$CurrentClinicName1
+carrier_clinic$CurrentClinicCity
+carrier_clinic$CurrentClinicState
+paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = "")
+```
+
+Clinic: `r noquote(carrier_clinic$CurrentClinicName1)`
+City: `r noquote(carrier_clinic$CurrentClinicCity)`
+State: `r noquote(carrier_clinic$CurrentClinicState)`
+Pct of transfers to gestational carriers: `r noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
+
+For anyone interested, a quick query in a search engine provides us with the websites of the clinics:
+[Western Fertility Institute](https://www.westernfertility.com/)
+[Reproductive Sciences Medical Center](https://fertile.com/)
+
+We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, and of embryos obtained by ICSI.  
+I am assuming here that the age is that of the patient.
+
+```{r fig.height = 15, fig.width = 8}
+
+par(mfcol = c(3, 1))
+
+# Ratio of transfers to gestational carriers
+boxplot(clinic_data[c(118:122)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers to Gestational Carriers by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "lightgoldenrod1")
+
+# Ratio of transfers using frozen embryos
+boxplot(clinic_data[c(124:128)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Using Frozen Embryos by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "coral")
+
+# Ratio of transfers with embryos obtained by ICSI
+boxplot(clinic_data[c(130:134)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Using Embryos obtained by ICSI by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "green")
+```
+
+In the case of the transfers to gestational carriers, the distributions by ages doesn't seem to change much except for <35 and >=43 years old patients. It seems to be a service used slightly less often by younger patients, and somewhat more often by older patients compared with the groups covering the 35 to 42 years old range. In any case, the median of the ratio is close to 0 in all the groups.
+
+The distribution of the ratio of the use of frozen embryos in transfer remains constant for all age groups, with their medians grazing the 0.7. It may be said the same for the use of embryos obtained by ICSI, except for the >=43 years old group, in which this technique seems slightly less common (even the median for the ratio lowers to 0.7 from around 0.8 in the rest of the groups).
 
 ## Number of cycles
 
@@ -756,7 +812,7 @@ State: `r noquote(preserv_clinic$CurrentClinicState)`
 Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`
 Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
 
-For anyone interested, a quick query in a serch engine provides us with the website of the clinic:
+For anyone interested, a quick query in a search engine provides us with the website of the clinic:
 <https://extendfertility.com/>
 
 
