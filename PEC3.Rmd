@@ -882,3 +882,36 @@ boxplot(clinic_data[c(112:116)],
 
 This case shows an interesting trend in which the medians are slightly higher in the groups ranging 35 to 42 years old patients; the distribution of the data is quite narrow around the median in all groups; and the distribution in the group of patients older than 43 year has almost collapsed on the value of the median (0.0). Nevertheless, there is an impressive quantity of high outliers in every group (an outlier here taken as any data point more than 1.5 times the length of the box).  
 That trend in these distributions is more or less expected since patients of more age would prefer to achieve pregnancy as soon as possible instead of saving eggs for the future. While younger patients may be still developing their professional careers and would want to preserve good quality eggs for later in life. Also, if the cause to wanting to store the eggs is related to an illness, older women are more probable to have already had children, while younger women may not, and then would want to store healthy egg before a treatment that could sterilize them.
+
+## Cause of the cycles
+
+In this section we will examine the data that describe the reason behind the ART cycles performed by the clinics. Most of them are directly related to infertility (male factor, endometriosis, tubal factor, and so on), while some are aimed to prevent genetic disorders (PGT), preservation of fertility (banking) or unknown.
+
+```{r fig.width = 8}
+
+# Cause of the cycles
+boxplot(clinic_data[c(142:154)],
+        #xlab = "Groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Cycles for Different Reasons by Hospital and Age Group"),
+        names = c("Male factor", "Endometriosis", "Tubal factor", "Ovulatory dysfunction",
+                  "Uterine factor", "PGT", "Gestational carrier", "DOR", "Banking",
+                  "Recurrent pregnancy loss", "Other infertility", "Other non-infertility",
+                  "Unexplained"),
+        col = "aliceblue",
+        xaxt = "n")
+
+cycle_labels <- c("Male factor", "Endometriosis", "Tubal factor", "Ovulatory dysfunction",
+                  "Uterine factor", "PGT", "Gestational carrier", "DOR", "Banking",
+                  "Recurrent pregnancy loss", "Other infertility", "Other non-infertility",
+                  "Unexplained")
+
+cycle_end_point <- 0.5 + length(cycle_labels)
+
+text(seq(1,cycle_end_point,by=1), par("usr")[3]-0.05, 
+     srt = 60, adj= 1, xpd = TRUE,
+     labels = cycle_labels,
+     cex=0.55)
+```
+
+
