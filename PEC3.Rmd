@@ -684,7 +684,7 @@ We see than the most common source of transfer from donor is the frozen embryo. 
 On the other hand, there does not seem to be much difference in the ratio of live births between the different sources (fresh or frozen egg, frozen embryo, and donated embryo).
 
 
-## Gestational carriers, frozen embryos and ICSI
+## Gestational carriers, frozen embryos, ICSI and PGT
 
 A *gestational carrier* is a woman who gestates an embryo originated from the egg of another woman. The expectation is that the newborn will be given to another woman or couple. People who use gestational carriers my include women with no uterus or women who cannot carry a pregnancy due to health problems; also, gay couples.
 
@@ -692,20 +692,22 @@ A *gestational carrier* is a woman who gestates an embryo originated from the eg
 
 *ICSI* (intracytoplasmatic sperm injection) is a technique of IVF in which a sperm in injected directly into the egg.
 
-In the next graph we will represent the data of the ratio of transfers that use a gestational carriers, those that use frozen embryos, and those in which at least one embryo has been obtained by ICSI:
+*PGT* (Preimplantation Genetic Testing) is the diagnosis of a genetic condition prior to achievement of pregnancy. It is performed on embryos obtained by IVF to prevent pregnancies affected by a genetic condition or chromosomal disorder.
+
+In the next graph we will represent the data of the ratio of transfers that use a gestational carriers, those that use frozen embryos, those in which PGT has been performed, and those in which at least one embryo has been obtained by ICSI:
 
 ```{r fig.width = 8}
 
 # Ratio of transfers (gestational carriers, frozen embryos, ICSI)
-boxplot(clinic_data[c(123, 129, 135)],
+boxplot(clinic_data[c(123, 129, 135, 141)],
         xlab = "Groups",
         ylab = "Ratio",
-        main = bquote("Ratio of Transfers Using Gestational Carriers, Frozen Embryos, or ICSI"),
-        names = c("Gestational Carriers", "Frozen Embryos", "ICSI"),
+        main = bquote("Ratio of Transfers Using Gestational Carriers, Frozen Embryos, PGT, or ICSI"),
+        names = c("Gestational Carriers", "Frozen Embryos", "ICSI", "PGT"),
         col = "aliceblue")
 ```
 
-Seen the data represented, we can say that gestational carrier transfers are a minority in most of the clinics, with notable exceptions. On the other hand, both the use of frozen embryos, and the ICSI technique are normalized and very frequent.
+Seen the data represented, we can say that gestational carrier transfers are a minority in most of the clinics (median 0.02), with notable exceptions. On the other hand, both the use of frozen embryos (median 0.67), and the ICSI technique (median 0.80) are normalized and very frequent. Transfers of embryos that have undergone PGT have also a low ratio (median 0.23), but not as low as gestational carriers and the distribution of ratios is wider. The relative rarity of PGT testing is probably due to it being an expensive and time-consuming technique that usually is performed only when a possible genetic condition is suspected.
 
 I was wondering about those two clinics with a ratio higher than 0.6 of transfers to gestational carriers.
 
@@ -727,12 +729,12 @@ For anyone interested, a quick query in a search engine provides us with the web
 [Western Fertility Institute](https://www.westernfertility.com/)
 [Reproductive Sciences Medical Center](https://fertile.com/)
 
-We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, and of embryos obtained by ICSI.  
+We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, embryos obtained by ICSI, and embryos subjected to PGT.  
 I am assuming here that the age is that of the patient.
 
-```{r fig.height = 15, fig.width = 8}
+```{r fig.height = 20, fig.width = 8}
 
-par(mfcol = c(3, 1))
+par(mfcol = c(4, 1))
 
 # Ratio of transfers to gestational carriers
 boxplot(clinic_data[c(118:122)],
@@ -757,11 +759,21 @@ boxplot(clinic_data[c(130:134)],
         main = bquote("Ratio of Transfers Using Embryos obtained by ICSI by Hospital and Age Group"),
         names = c("<35", "35-37", "38-40", "41-42", ">=43"),
         col = "green")
+
+# Ratio of transfers with embryos subjected to PGT
+boxplot(clinic_data[c(136:140)],
+        xlab = "Age groups",
+        ylab = "Ratio",
+        main = bquote("Ratio of Transfers Using Embryos Subjected to PGT by Hospital and Age Group"),
+        names = c("<35", "35-37", "38-40", "41-42", ">=43"),
+        col = "aliceblue")
 ```
 
 In the case of the transfers to gestational carriers, the distributions by ages doesn't seem to change much except for <35 and >=43 years old patients. It seems to be a service used slightly less often by younger patients, and somewhat more often by older patients compared with the groups covering the 35 to 42 years old range. In any case, the median of the ratio is close to 0 in all the groups.
 
 The distribution of the ratio of the use of frozen embryos in transfer remains constant for all age groups, with their medians grazing the 0.7. It may be said the same for the use of embryos obtained by ICSI, except for the >=43 years old group, in which this technique seems slightly less common (even the median for the ratio lowers to 0.7 from around 0.8 in the rest of the groups).
+
+When observing the ratio of transfers in which at least one of the embryos have been subjected to PGT, the distributions by age are very similar. I was expecting a rise of the median for the more aged groups, since their eggs would be proner to experiment chromosomal abnormalities. Nevertheless, it may be that the more frequent use of donor eggs by those groups a reason to not use PGT more that the younger age groups.
 
 ## Number of cycles
 
