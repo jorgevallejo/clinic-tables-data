@@ -914,4 +914,25 @@ text(seq(1,cycle_end_point,by=1), par("usr")[3]-0.05,
      cex=0.8)
 ```
 
+The most frequent causes behind ART cycles are male factor (which encompasses all the causes dependent on the males), diminished ovarian reserve (DOR), and banking.  
+After that, come ovulatory dysfunction, tubal factor,infertility causes not specified and causes unexplained).
+The least frequent causes are endometriosis, uterine factor, PGT, recurrent pregnancy loss, causes not related to infertility but not specified, and -almost anecdotically- cycles for use a gestational carrier.
+
+What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles commited to gestational carriers is very low:
+
+```{r}
+cycle_carrier_table <- clinic_data[clinic_data$CurrentClinicName1 == "WESTERN FERTILITY INSTITUTE" | clinic_data$CurrentClinicName1 == "REPRODUCTIVE SCIENCES MEDICAL CENTER", c("CurrentClinicName1", "TransCarrierAll", "ReasonCarrier")]
+
+knitr::kable(cycle_carrier_table,
+             format = 'pandoc', # I have to specify this format to print the caption
+             row.names = FALSE,
+             col.names = c("Clinic Name", "Ratio transfers", "Ratio cycles"), 
+             align = c('l','c','c') , # column alignment: left, center, center
+             caption = "Comparing ratio of transfers with ratio of cycles,
+             for gestational carriers")
+```
+
+I don't know which is the reason for that difference.
+XXXX Look if the knitted document shows that big blank space in the table XXXX
+
 
