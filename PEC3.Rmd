@@ -901,9 +901,9 @@ boxplot(clinic_data[c(142:154)],
         col = "aliceblue",
         xaxt = "n")
 
-cycle_labels <- c("Male factor", "Endometriosis", "Tubal factor", "Ovulatory dysfunction",
-                  "Uterine factor", "PGT", "Gestational carrier", "DOR", "Banking",
-                  "Recurrent pregnancy loss", "Other infertility", "Other non-infertility",
+cycle_labels <- c("Male factor", "Endometriosis", "Tubal factor", "Ovulatory\ndysfunction",
+                  "Uterine factor", "PGT", "Gestational\ncarrier", "DOR", "Banking",
+                  "Recurrent\npregnancy loss", "Other infertility", "Other\nnon-infertility",
                   "Unexplained")
 
 cycle_end_point <- 0.5 + length(cycle_labels)
@@ -911,7 +911,7 @@ cycle_end_point <- 0.5 + length(cycle_labels)
 text(seq(1,cycle_end_point,by=1), par("usr")[3]-0.05, 
      srt = 60, adj= 1, xpd = TRUE,
      labels = cycle_labels,
-     cex=0.55)
+     cex=0.8)
 ```
 
 
