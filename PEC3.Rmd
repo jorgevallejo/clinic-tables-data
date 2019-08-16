@@ -140,7 +140,7 @@ The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from as
 
 I am interested in the data broke down by clinic. Therefore, I will import the data from sheets **Clinic Table Dictionary** and **Clinic Table Data Records**.
 
-```{r}
+```{r warning=FALSE}
 require("xlsx")
 clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
                                endRow = 165, encoding = "UTF-8")
@@ -211,7 +211,7 @@ I will remove the symbol with `gsub`. Besides, I will divide the result by 100, 
 
 3) Data as fractions. Even a bit more complex. I will use regular expressions to isolate numerator and denominator, and will return the result of the division as a ratio.
 
-```{r}
+```{r warning=FALSE}
 # This function processes ratios expressed as fractions.
 divide <- function(x){
   numerator <- as.numeric(gsub(" .*$", "", x))
@@ -235,11 +235,13 @@ clinic_data[, ratios] <- lapply(clinic_data[, ratios], numerizador)
 # I haven't been able to correct it yet. It is possible to avoid the raise of the warning,
 # but I don't feel comfortable masking error warnings.
 
+# Using chunk option warning=FALSE masks those error warnings.
+
 str(clinic_data[, ratios], list.len = length(clinic_data[, ratios]))
 
 ```
 
-I am not sure about why all those `NAs introduced by coercion` appear. I suspect it is because `NA` values in the table are stored as text.
+The use of chunk option `warning=FALSE` prevents the displaying of multiple `NAs introduced by coercion` messages. I am not sure, but I suppose the cause for the warnings is that the`NA` values in the table are stored as text.
 
 
 ## Variables: type and description
@@ -409,9 +411,8 @@ I suspect that the median diminishes with age group because donor eggs are prefe
 Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
 ```{r}
-# To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
+# Ratio of intended retrievals resulting in live births, by age
 pct_int_ret <- clinic_data[,12:16]
-# pct_int_ret[pct_int_ret == 0] <- 1
 
 boxplot(pct_int_ret,
         xlab = "Age groups",
