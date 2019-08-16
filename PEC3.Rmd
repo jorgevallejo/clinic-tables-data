@@ -931,3 +931,48 @@ I don't know which is the reason for that difference.
 XXXX Look if the knitted document shows that big blank space in the table XXXX
 
 
+
+# 5. Probability and simulation
+
+Let's take a variable; for example, the name of the city (CurrentCityClinic).
+How many clinics are in each city that has at least one clinic?
+
+```{r}
+cities_by_clinic <- sort(table(clinic_data$CurrentClinicCity), decreasing = TRUE)
+# For the sake of simplicity I am assuming here that, in this list, we don't have any
+# cities with the same name in different states.
+
+knitr::kable(cities_by_clinic,
+             format = "pandoc",
+             col.names = c("City", "Clinics"),
+             caption = "Number of clinics in each city")
+```
+
+If we represent it in a barplot:
+
+```{r}
+# Most of this code I adapted it from:
+# https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
+
+#par(mar = c(7, 4, 2, 2) + 0.2)
+
+#end_point <- 0.5 + length(unique(clinic_data$CurrentClinicState)) + length(unique(clinic_data$CurrentClinicState))-1
+
+barplot(cities_by_clinic,
+        # This adjusts the maxim value in the y axis:
+        ylim = c(0,4+max(table(clinic_data$CurrentClinicCity))),
+        xaxt = "n", # Avoids plotting the names in the x axis.
+        space = 1)
+
+#text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
+#     srt = 60, adj= 1, xpd = TRUE,
+#     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
+```
+
+We see that there are few cities with several clinics, and many with only two or three.
+We can get a contingency table:
+```{r}
+table(cities_by_clinic)
+```
+
+Which means that we got 195 cities with one fertility clinic in them, and one city with 21 clinics in it.
