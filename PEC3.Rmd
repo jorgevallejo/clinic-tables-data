@@ -102,25 +102,27 @@ url_end1 <- ".xls"
 url_end2 <- "-clinic-tables-dataset.xls"
 url_end3 <- "-clinic-table-dataset.xls"
 
+folder <- "../datos/"
+
 # This code is rough on the edges, it doesn't take into account when a file
 # fails to download.
 
 for (year in years){
   if (year <= 2012){
     url <- paste0(url_start1, year, url_end1)
-    destfile <- paste0(file_start1, year, url_end1)
+    destfile <- paste0(folder, file_start1, year, url_end1)
   }
   else if (year == 2013){
     url <- paste0(url_start2, year, url_end2)
-    destfile <- paste0(file_start2, year, url_end2)
+    destfile <- paste0(folder, file_start2, year, url_end2)
   }
     else if (year == 2014){
     url <- "https://www.cdc.gov/art/artdata/docs/excel/2014-Clinic-Tables-Data-Dictionary.xls"
-    destfile <- "2014-Clinic-Tables-Data-Dictionary.xls"
+    destfile <- paste0(folder, "2014-Clinic-Tables-Data-Dictionary.xls")
   }
   else {
     url <- paste0(url_start3, year, url_end3)
-    destfile <- paste0(file_start3, year, url_end3)
+    destfile <- paste0(folder, file_start3, year, url_end3)
   }
   
   #cat(url, "\n", destfile, "\n\n") # Cheks that the names of url and files are rightly constructed.
