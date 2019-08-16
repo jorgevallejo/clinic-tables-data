@@ -5,7 +5,7 @@ author: "Jorge Vallejo Ortega"
 output:
   md_document: default
   pdf_document: default
-# Next is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
+# Next code is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding,
   output_format = "all") })
@@ -171,14 +171,6 @@ Why numeric variables are detected  as characters. Ratios contain non-numeric sy
 
 We will order alphabetically each column, see what happens.
 
-First of all, to avoid problems down the line, we will change null values in the table for `NA`:
-
-```{r}
-clinic_data[clinic_data==""] <- NA
-
-View(clinic_data)
-```
-
 Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (`,`).
 
 ```{r}
@@ -209,7 +201,7 @@ clinic_data[, integers] <- lapply(clinic_data[, integers],
 str(clinic_data[, integers])
 ```
 
-Pre-processing the columns with rations is a bit more complex. It is necessary to deal with three different cases:
+Pre-processing the columns with ratios is a bit more complex. It is necessary to deal with three different cases:
 
 1) Data as <1%. Since we don't have the real value, what I will do is arbitrarily chose
 the value 0.5%, expressed as 0.005 ratio.
@@ -220,14 +212,14 @@ I will remove the symbol with `gsub`. Besides, I will divide the result by 100, 
 3) Data as fractions. Even a bit more complex. I will use regular expressions to isolate numerator and denominator, and will return the result of the division as a ratio.
 
 ```{r}
-# This function process ratios expressed as fractions.
+# This function processes ratios expressed as fractions.
 divide <- function(x){
   numerator <- as.numeric(gsub(" .*$", "", x))
   denominator <- as.numeric(gsub("^.*/ ", "", x))
   return (numerator / denominator)
 }
 
-# This is the main functios for processing ratios from characters to numbers.
+# This is the main function for processing ratios from characters to numbers.
 # Expect the appearance of several warnings of 'NA introduced by coercion' due to multiple # data points represented as 'NA' in characters which the function is unable to deal with.
 numerizador <- function(dato){
     ifelse (dato == "<1%", 0.005,
