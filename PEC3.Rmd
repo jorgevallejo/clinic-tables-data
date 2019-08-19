@@ -940,7 +940,7 @@ How many clinics are in each city that has at least one clinic?
 ```{r}
 cities_by_clinic <- sort(table(clinic_data$CurrentClinicCity), decreasing = TRUE)
 # For the sake of simplicity I am assuming here that, in this list, we don't have any
-# cities with the same name in different states.
+# cities with the same name in different states (although I know that we do).
 
 knitr::kable(cities_by_clinic,
              format = "pandoc",
@@ -972,7 +972,47 @@ barplot(cities_by_clinic,
 We see that there are few cities with several clinics, and many with only two or three.
 We can get a contingency table:
 ```{r}
-table(cities_by_clinic)
+clinics_frequency <- table(cities_by_clinic)
+
+clinics_frequency
 ```
 
-Which means that we got 195 cities with one fertility clinic in them, and one city with 21 clinics in it.
+Which means that we got 195 cities with one fertility clinic in them, and one city with 21 clinics in it. 
+
+```{r}
+clinic_cities <- length(unique(clinic_data$CurrentClinicCity))
+no_clinic_cities <- 19495 - clinic_cities
+```
+
+In total, we have `clinic cities` cities with at least a fertility clinic.
+
+According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places with some exceptions) in the country. Which means that there are `no_clinic_cities` cities with no fertility clinic.
+
+Let's add this datum to the table and represent it in a barplot.
+
+```{r}
+clinics_frequency_dataframe <- rbind(
+  data.frame(cities_by_clinic = "0", Freq = no_clinic_cities),
+  as.data.frame(clinics_frequency))
+
+barplot(height = clinics_frequency_dataframe$Freq,
+        names.arg = clinics_frequency_dataframe$cities_by_clinic,
+        ylim = c(0,signif(max(clinics_frequency_dataframe$Freq), digits = 1)),
+        #log = "y",
+        ylab = "Frequency", xlab = "Fertility clinics in a city"
+        )
+```
+
+If we represent it in a logarithmic scale:
+
+```{r}
+
+barplot(height = clinics_frequency_dataframe$Freq,
+        names.arg = clinics_frequency_dataframe$cities_by_clinic,
+        ylim = c(1,signif(max(clinics_frequency_dataframe$Freq), digits = 1)),
+        log = "y",
+        ylab = "Frequency (log10)", xlab = "Fertility clinics in a city"
+        )
+```
+
+We can see that the number of cities with not even one fertility clinic is many more (by two orders of magnitude) than those that have only one clinic, which are one order of magnitud more than those that have at least two clinics. This signals that having a fertility clinics is a very improbable characteristics for a randomly chosed city in the United States. XXXX Use this for the reasoning of the probability distribution of randomly finding a city with fertility clinics XXXX
