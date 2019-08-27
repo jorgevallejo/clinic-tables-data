@@ -988,18 +988,25 @@ In total, we have `clinic cities` cities with at least a fertility clinic.
 
 According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places with some exceptions) in the country. Which means that there are `no_clinic_cities` cities with no fertility clinic.
 
-Let's add this datum to the table and represent it in a barplot.
+Let's add this datum to the table and represent it in a barplot. We will add counts with zero frequency as well, it will be useful later.
 
 ```{r}
+
 clinics_frequency_dataframe <- rbind(
-  data.frame(cities_by_clinic = "0", Freq = no_clinic_cities),
+  data.frame(cities_by_clinic = as.character(c(0, 9:20)),
+             Freq = c(no_clinic_cities, rep(0, length(9:20)))),
   as.data.frame(clinics_frequency))
+
+#Order clinics_frequency_dataframe by $cities_by_clinic
+clinics_frequency_dataframe <- clinics_frequency_dataframe[order(as.numeric(as.character(
+  (clinics_frequency_dataframe$cities_by_clinic)))), ]
 
 barplot(height = clinics_frequency_dataframe$Freq,
         names.arg = clinics_frequency_dataframe$cities_by_clinic,
         ylim = c(0,signif(max(clinics_frequency_dataframe$Freq), digits = 1)),
         #log = "y",
-        ylab = "Frequency", xlab = "Fertility clinics in a city"
+        ylab = "Frequency", xlab = "Fertility clinics in a city",
+        cex.names = 0.7
         )
 ```
 
@@ -1007,12 +1014,128 @@ If we represent it in a logarithmic scale:
 
 ```{r}
 
-barplot(height = clinics_frequency_dataframe$Freq,
+barplot(height = (clinics_frequency_dataframe$Freq)+1, # To avoid errors converting to log
         names.arg = clinics_frequency_dataframe$cities_by_clinic,
         ylim = c(1,signif(max(clinics_frequency_dataframe$Freq), digits = 1)),
         log = "y",
-        ylab = "Frequency (log10)", xlab = "Fertility clinics in a city"
+        ylab = "Frequency (log10)", xlab = "Fertility clinics in a city",
+        cex.names = 0.7
         )
 ```
 
-We can see that the number of cities with not even one fertility clinic is many more (by two orders of magnitude) than those that have only one clinic, which are one order of magnitud more than those that have at least two clinics. This signals that having a fertility clinics is a very improbable characteristics for a randomly chosed city in the United States. XXXX Use this for the reasoning of the probability distribution of randomly finding a city with fertility clinics XXXX
+We can see that the number of cities with not even one fertility clinic is many more (by two orders of magnitude) than those that have only one clinic, which are one order of magnitud more than those that have at least two clinics. This signals that having a fertility clinics is a very improbable characteristics for a randomly chosed city in the United States.
+
+The Poisson distribution is used for frequency distribution of counts of rare but independent events. It is possible, then, that the frequency of clinics follows a binomial.
+
+We will try to reproduce the above barplot with a random generation for the Poisson distribution with parameter *lambda* equal to the mean count per sample.
+
+```{r}
+# Generate a vector with the number of clinics in a city
+counts <- as.numeric(as.character(clinics_frequency_dataframe$cities_by_clinic))
+
+# Generate a vector with the number of cities for each count
+freq <- clinics_frequency_dataframe$Freq
+
+# Generate a vector with all the counts
+vector_counts <- rep(counts, freq)
+
+lambda <- mean(vector_counts)
+
+# Generate a random vector from the poisson distribution with the same length
+# that our case and lambda equal to our mean.
+simulated_counts <- rpois(length(vector_counts), lambda)
+
+table(simulated_counts)
+```
+
+The data shown in the table doesn't look like a good match for our data.
+
+Another possibility is the **negative binomial distribution**, for cases in which the variance is much greater than the mean.  
+In our case:
+```{r}
+var(vector_counts)/mean(vector_counts)
+```
+
+The variable is three times the mean. It would be 1 if the data were Poisson distributed.  
+Let's make a rough estimate of the clumping parameter *k*:
+```{r}
+# The formulae are adapted from _The R Book_, section 7.4.7
+mean(vector_counts)^2/(var(vector_counts)-mean(vector_counts))
+```
+
+A function that computes the maximum likelihood estimate of **k** from a vector of frequencies of counts:
+```{r}
+#From _The R Book_, section 7.4.7
+kfit <- function(x) {
+  lhs <- numeric()
+  rhs <- numeric()
+  y <- 0:(length(x) - 1)
+  j <- 0:(length(x) - 2)
+  m <- sum(x * y)/sum(x)
+  s2 <- (sum(x * y^2) - sum(x * y)^2/(sum(x))/(sum(x)) - 1)
+  k1 <- m^2/(s2 - m)
+  a <- numeric(length(x)-1)
+  
+  for (i in 1:(length(x) - 1)) a[i] <- sum(x [- c(1:i)])
+  i <- 0
+  for (k in seq(k1/1.2, 2*k1, 0.001)) {
+    i <- i+1
+    lhs[i] <- sum(x) * log(1 + m/k)
+    rhs[i] <- sum(a/(k + j))
+  }
+  k <- seq(k1/1.2, 2*k1, 0.001)
+  plot(k, abs(lhs-rhs), xlab="k", ylab = "Difference", type = "l", col = "red")
+  d <- min(abs(lhs-rhs))
+  sdd <- which(abs(lhs-rhs)==d)
+  k[sdd]
+}
+```
+
+Trying it with the clinics count data:
+```{r}
+kfit(freq)
+```
+So, the maximum likelihood of _k_ is this case is 3.11e-07.
+
+How would a negative binomial distribution with a mean of `r lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r clinic_cities+no_clinic_cities` in this case).
+
+```{r}
+cities <- clinic_cities+no_clinic_cities
+k <- 3.11e-07
+terms <- (0:(length(freq)-1))
+negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
+  (factorial(terms)*factorial(k-1))*(lambda/(lambda+k))^(terms)
+```
+
+We will compare observed and expected frequencies using barplot, alternating the bars for observed and expected (*from* The R Book, *section 7.4.7*).
+
+```{r}
+#Concatenate observed and expected frequencies in an alternating sequence.
+# Put the observed counts (freq) in the odd-numbered bars and the expected counts
+# (negative_binomial) in the even-numbered bars.
+both <- numeric(length(freq)*2)
+
+both[1:length(both) %% 2 != 0] <- freq
+
+both[1:length(both) %% 2 == 0] <- negative_binomial
+
+#Create list of labels to name the bars (alternating blanks and counts)
+# Produce a vector of appropiate lenght (both) containing the repeating bar labels,
+# then replace the even-numbered entries with blanks.
+labs <- as.character(rep(0:(length(freq)-1), each=2))
+
+labs[1:(length(labs))%%2==0] <- " "
+
+#Draw the barplot
+barplot_legend <- function(x) {
+barplot(x, col=rep(c(3,4), length(freq)), ylab = "Frequency", names=labs,
+        cex.names = 0.7)
+
+#Create a legend
+legend(x = 15, y= 15000, legend=c("Observed", "Expected"), fill=(c(3,4)))
+}
+
+barplot_legend(both)
+```
+
+To the naked eye, the fit between both distributions is close. But we might want to measure the lack of fit between observed and expected distributions. At the moment, I don't know which would be the most adequate test.
