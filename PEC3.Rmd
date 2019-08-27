@@ -934,6 +934,7 @@ XXXX Look if the knitted document shows that big blank space in the table XXXX
 
 # 5. Probability and simulation
 
+## 5.1 Probability distribution of variable CurrentCityClinic.
 Let's take a variable; for example, the name of the city (CurrentCityClinic).
 How many clinics are in each city that has at least one clinic?
 
@@ -1138,4 +1139,5 @@ legend(x = 15, y= 15000, legend=c("Observed", "Expected"), fill=(c(3,4)))
 barplot_legend(both)
 ```
 
-To the naked eye, the fit between both distributions is close. But we might want to measure the lack of fit between observed and expected distributions. At the moment, I don't know which would be the most adequate test.
+To the naked eye, the fit between both distributions is close. But we might want to measure the lack of fit between observed and expected distributions. At the moment, I don't know which would be the most adequate test.  
+Nevertheless, the assumptions of this probability distribution aren't valid. Each trial should be independent; however, it is reasonable to assume that the existence of a fertility clinic in a city depends on the city's population. Also, cities around a city that already has a fertility clinic may have less probability of having a fertility clinic.
