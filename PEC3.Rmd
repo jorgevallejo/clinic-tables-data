@@ -1141,3 +1141,55 @@ barplot_legend(both)
 
 To the naked eye, the fit between both distributions is close. But we might want to measure the lack of fit between observed and expected distributions. At the moment, I don't know which would be the most adequate test.  
 Nevertheless, the assumptions of this probability distribution aren't valid. Each trial should be independent; however, it is reasonable to assume that the existence of a fertility clinic in a city depends on the city's population. Also, cities around a city that already has a fertility clinic may have less probability of having a fertility clinic.
+
+## 5.2 Probability distribution of variable Donor_NumTrans2.
+Let's take another variable; Donor_NumTrans2 (Number of transfers of fresh embryos from a frozen egg from donor).
+Which distribution follows this variable?
+
+```{r}
+donor_trans_2 <- clinic_data$Donor_NumTrans2
+
+table(donor_trans_2)
+
+hist(donor_trans_2, breaks = (-0.5:170.5), ylim = c(0, 200), xlim = c(0, 200),
+     main = "Transfers of fresh embryos from a frozen egg from donor",
+     xlab = "Transfers", ylab = "Frequency", col = "aliceblue")
+```
+
+This once again looks like a Poisson distribution or a negative binomial, where events (a particular kind of transfer in this case) have low probability.  
+Nevertheless, we may think that the number of transfers is heavily dependent on the size of the clinic. We would want to look instead at the ratio of this kind of transfers to the total number of transfers in each clinic.  
+For each clinic, we need to divide this variable (Donor_NumTrans2) between the sum of all the variables involving transfers from donor (Donor_NumTrans1 to 4):
+
+```{r}
+trans_donor_variables <- c("Donor_NumTrans1","Donor_NumTrans2","Donor_NumTrans3","Donor_NumTrans4")
+
+ratio_donor_trans2 <- clinic_data$Donor_NumTrans2 / rowSums(clinic_data[,trans_donor_variables])
+
+hist(ratio_donor_trans2, main = "Transfers of fresh embryos from a frozen egg from donor",
+     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+```
+
+Keep in mind that, this time, we are excluding those clinics with no transfers from donor whatsoever (dividing by zero produces NaN results, which are not included in the histogram).  
+Still, the most frequent by large is the ratio ranging from 0 to 10%.  
+Since the values of _x_ (the ratio) are continuous and bounded between 0 and 1, I would say that it could be described by the _beta probability distribution_.
+
+```{r}
+# From https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
+
+estBetaParams <- function(mu, var) {
+  alpha <- ((1 - mu) / var - 1 / mu) * mu ^ 2
+  beta <- alpha * (1 / mu - 1)
+  return(params = list(alpha = alpha, beta = beta))
+}
+
+# We can obtain alpha and beta:
+
+mu <- mean(ratio_donor_trans2, na.rm = TRUE)
+var <- var(ratio_donor_trans2, na.rm = TRUE)
+
+beta_ratio <- estBetaParams(mu, var)
+
+hist(ratio_donor_trans2, breaks = seq(0,1,0.01), main = "Transfers of fresh embryos from a frozen egg from donor",
+     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
+```
