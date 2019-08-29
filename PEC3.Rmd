@@ -1190,11 +1190,11 @@ var <- var(ratio_donor_trans2, na.rm = TRUE)
 beta_ratio <- estBetaParams(mu, var)
 
 hist(ratio_donor_trans2, breaks = seq(0,1,0.01), main = "Transfers of fresh embryos from a frozen egg from donor",
-     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
-lines(seq(0, 1, 0.01), length(ratio_donor_trans2)*dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
+     xlab = "Ratio", ylab = "Density", col = "aliceblue", freq = FALSE)
+lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
 ```
 
-No, it doesn't fit well. Maybe we have to come back to the negative binomial (or the gamma distribution).  
+I does not look bad. Although I wonder if we could use the negative binomial (or the gamma distribution).  
 The relation between mean and variance:
 ```{r}
 var/mu
@@ -1209,28 +1209,40 @@ shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
 
 # Draw the histogram
 hist(ratio_donor_trans2, breaks = seq(0,1,0.01), main = "Transfers of fresh embryos from a frozen egg from donor",
-     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+     xlab = "Ratio", ylab = "Density", col = "aliceblue",
+     freq = FALSE)
 
 # Draw the density function
 
-lines(seq(0.01, 1, 0.01), length(ratio_donor_trans2)*dgamma(seq(0.01, 1, 0.01), shape, rate))
+lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape, rate))
 ```
 
-Better, but not good enough. Unless... we change granularity for a coarse one (wider bins in the histogram and longer intervals in the line representing the gamma):
+Worse, I would definitively stick to the beta distribution.
+
+In short, **I am accepting the beta distribution as the probability distribution for this variable** (ratio of transfers of fresh embryos from frozen donor's egg). But I still have doubts about it.
+
+
+## 5.3 Probability distribution of variable ND_IntentRetLB2.
+Let's take a last variable for a probability question; ND_IntentRetLB2 (Ratio of intended retrievals resulting in live births for patients aged 35-37 years old).
+Which distribution follows this variable?
+
 ```{r}
-# Calculate the two parameter values for the gamma distribution
-rate <- mean(ratio_donor_trans2, na.rm = TRUE)
-shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
+table(clinic_data$ND_IntentRetLB2)
 
-# Draw the histogram
-hist(ratio_donor_trans2, breaks = seq(0,1,0.1), main = "Transfers of fresh embryos from a frozen egg from donor",
-     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+max(table(clinic_data$ND_IntentRetLB2))
 
-# Draw the density function
-## The 0.01 value at the start of seq is to avoid Inf as a result
-lines(seq(0.01, 1.01, 0.1), length(ratio_donor_trans2)*dgamma(seq(0.01, 1.01, 0.1), shape, rate))
+hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01), 
+     main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
+     xlab = "Ratio", ylab = "Frequency", col = "aliceblue")
 ```
 
-This makes for a way better fit, but it feels a bit like cheating. I may come back to this once I have a better knowledge of statistics.
+This looks like a normal distribution skewed to the right. Maybe a gamma, then.
 
-In short, I am accepting the gamma distribution as the probability distribution for this variable (ratio of transfers of fresh embryos from frozen donor's egg). But I have serious doubts about it.
+```{r}
+hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01), 
+     main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
+     xlab = "Ratio", ylab = "Density", col = "aliceblue",
+     freq = FALSE)
+
+lines(seq(0,1,0.01), dnorm(seq(0,1,0.01), mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE), sqrt(var(clinic_data$ND_IntentRetLB2, na.rm = TRUE))), col = "blue")
+```
