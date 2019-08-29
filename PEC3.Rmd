@@ -1191,5 +1191,46 @@ beta_ratio <- estBetaParams(mu, var)
 
 hist(ratio_donor_trans2, breaks = seq(0,1,0.01), main = "Transfers of fresh embryos from a frozen egg from donor",
      xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
-lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
+lines(seq(0, 1, 0.01), length(ratio_donor_trans2)*dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
 ```
+
+No, it doesn't fit well. Maybe we have to come back to the negative binomial (or the gamma distribution).  
+The relation between mean and variance:
+```{r}
+var/mu
+```
+
+The mean is quite higher than the variance, which leads away from the negative binomial distribution, but away as well from the Poisson distribution (which is characterized for having the same mean and variance). Maybe the answer is in the gamma distibution.
+
+```{r}
+# Calculate the two parameter values for the gamma distribution
+rate <- mean(ratio_donor_trans2, na.rm = TRUE)
+shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
+
+# Draw the histogram
+hist(ratio_donor_trans2, breaks = seq(0,1,0.01), main = "Transfers of fresh embryos from a frozen egg from donor",
+     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+
+# Draw the density function
+
+lines(seq(0.01, 1, 0.01), length(ratio_donor_trans2)*dgamma(seq(0.01, 1, 0.01), shape, rate))
+```
+
+Better, but not good enough. Unless... we change granularity for a coarse one (wider bins in the histogram and longer intervals in the line representing the gamma):
+```{r}
+# Calculate the two parameter values for the gamma distribution
+rate <- mean(ratio_donor_trans2, na.rm = TRUE)
+shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
+
+# Draw the histogram
+hist(ratio_donor_trans2, breaks = seq(0,1,0.1), main = "Transfers of fresh embryos from a frozen egg from donor",
+     xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
+
+# Draw the density function
+## The 0.01 value at the start of seq is to avoid Inf as a result
+lines(seq(0.01, 1.01, 0.1), length(ratio_donor_trans2)*dgamma(seq(0.01, 1.01, 0.1), shape, rate))
+```
+
+This makes for a way better fit, but it feels a bit like cheating. I may come back to this once I have a better knowledge of statistics.
+
+In short, I am accepting the gamma distribution as the probability distribution for this variable (ratio of transfers of fresh embryos from frozen donor's egg). But I have serious doubts about it.
