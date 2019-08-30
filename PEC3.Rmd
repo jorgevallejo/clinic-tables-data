@@ -1259,7 +1259,7 @@ lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape, rate), col = "red")
 legend(x = 0.8, y= 3, legend=c("Normal", "Gamma"), fill=(c("blue","red")))
 ```
 
-Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal distribution** with mean `mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)` and variance `var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)`.
+Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal distribution** with mean `r mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)` and variance `r var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)`.
 
 
 ## 5.4 A brief simulation model
@@ -1291,3 +1291,119 @@ hist(simulated_NDIRLB2, breaks = seq(0,1,0.01),
 ```
 
 This histogram looks way smoother than the one built with real data but, all in all, the profile is quite similar. The exception being the few counts of 0.9-1.0 that we found in the real data. I think that the problem here is that, working with data of ratios, we loose the information about the real number of procedures performed at each clinic. That could have an effect on the distribution that best modelled the data.
+
+
+
+# 6. Regression analysis
+
+Is there a relationship between clinic size and the percentage of transfers that resulted in live births?
+
+We can use the total number of ART cycles (variable `TotNumCyclesAll`) as a measure of the size of the clinic.  
+Getting the number of transfers and the percentage of transfers that resulted in live birth is a bit tricky:
+
+```{r}
+# Calculate number of living births for each group of transfers
+columns_NumTrans <- c(37:41, 82:85)
+columns_ratioTransLB <- c(42:46, 86:89)
+
+NDLB1 <- clinic_data$ND_NumTrans1 * clinic_data$ND_TransLB1
+NDLB2 <- clinic_data$ND_NumTrans2 * clinic_data$ND_TransLB2
+NDLB3 <- clinic_data$ND_NumTrans3 * clinic_data$ND_TransLB3
+NDLB4 <- clinic_data$ND_NumTrans4 * clinic_data$ND_TransLB4
+NDLB5 <- clinic_data$ND_NumTrans5 * clinic_data$ND_TransLB5
+DLB1 <- clinic_data$Donor_NumTrans1 * clinic_data$Donor_TransLB1
+DLB2 <- clinic_data$Donor_NumTrans2 * clinic_data$Donor_TransLB2
+DLB3 <- clinic_data$Donor_NumTrans3 * clinic_data$Donor_TransLB3
+DLB4 <- clinic_data$Donor_NumTrans4 * clinic_data$Donor_TransLB4
+
+# New dataframe with number of living births
+living_births <- data.frame(NDLB1, NDLB2, NDLB3, NDLB4, NDLB5, DLB1, DLB2, DLB3, DLB4)
+
+# Calculate the total number of transfers for each clinic
+TotNumTransfers <- rowSums(clinic_data[,c(37:41, 82:85)])
+
+# Total number of living births from transfer for each clinic
+TotNumLB <- rowSums(living_births, na.rm = TRUE)
+
+# Ratio of living births/transfers for each clinic
+TotRatioLB <- TotNumLB/TotNumTransfers
+```
+
+Let's try a plot diagram to explore the relation between ART cycles and ratio of living births by transfer:
+
+```{r}
+plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
+
+```
+
+It is difficult preliminarly say anything from that graph, only that most of the info is given below 2000 cycles. Datapoints beyond 2000 cycles doesn't seem to convey any relationship between ratio and cycles.
+
+Let's try to carry out a regression:  
+
+If we calculate the correlation between both variables:
+
+```{r}
+cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")
+```
+
+There doesn't seem to be any correlation or, if there is any, it is very weak.
+
+But let's work in the regression model:
+```{r}
+RegModel <- lm(TotRatioLB~clinic_data$TotNumCyclesAll)
+
+summary(RegModel)
+```
+
+With that data, the equation for the least squares line is (rounding to the third decimal):
+
+Y = 1.103e-05x + 0.419
+
+Let's add it to the graph:
+
+```{r}
+plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
+
+abline(RegModel, col = "red")
+```
+
+The correlation coefficient is only 0.008369, which I interpret as a very poor adjust rending meaningless the values of the model. It may be due to a much greater variance for low number of cycles compared with the variance for high number of cycles; while the model used assumes that the variables follow normal distribution and homoscedasticity.
+
+Let's check those assumptions:
+
+```{r fig.height = 20, fig.width = 8}
+# Check normality with qqplot
+par(mfcol = c(4,1))
+
+qqnorm(clinic_data$TotNumCyclesAll, main="Number of cycles Q-Q Plot")
+qqline(clinic_data$TotNumCyclesAll, col = "blue")
+
+# Or with a histogram
+hist(clinic_data$TotNumCyclesAll, main = "Total number of cycles", xlab = "Cycles",
+     col = "aliceblue")
+
+qqnorm(TotRatioLB)
+qqline(TotRatioLB)
+
+hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
+     col = "lightgoldenrod1")
+```
+
+It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer look more like it, but if we test it with Shapiro-Wilk:
+
+```{r}
+shapiro.test(TotRatioLB)
+```
+
+With a p-value so low be reject the null hypothesis of normality. We may instead want to check correlation with a test that doesn't assume normality, like Pearson correlation. Which... we already did previously when calculated correlation with `cor()` since the default mode is "pearson".  
+The result was `r cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
+which means that there is not correlation between the variables.  
+The significativity of that result is:
+```{r}
+cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
+```
+Which doesn't let as reject the altenative hypothesis.
+
+In short, **the data doesn't show any correlation between the size of the clinic (measured in total number of ART cycles) and the ratio of living birts per transfer**.  
+Which is good news, since it means that little clinics are as effective at achieving living births after transfer as big clinics are.
+
