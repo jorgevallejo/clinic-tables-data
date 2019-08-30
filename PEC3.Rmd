@@ -1260,3 +1260,34 @@ legend(x = 0.8, y= 3, legend=c("Normal", "Gamma"), fill=(c("blue","red")))
 ```
 
 Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal distribution** with mean `mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)` and variance `var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)`.
+
+
+## 5.4 A brief simulation model
+Let's say that the last studied variable, ND_IntentRetLB2, effectivelly follows a normal distribution with the calculated mean and variance. If we were to simulate its frequency distribution, would we get and histogram like that from the real data?
+
+```{r}
+# Use the same population size than in real data (exclude NA)
+n_NDIRLB2 <- sum(!is.na(clinic_data$ND_IntentRetLB2))
+
+# Generate random numbers
+set.seed(378992)
+simulated_NDIRLB2 <- rnorm(n_NDIRLB2,
+                           mean = mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE),
+                           sd = sqrt(var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)))
+
+# Replace negative values by zero
+simulated_NDIRLB2[simulated_NDIRLB2<0] = 0
+
+# Represent simulated data
+
+hist(simulated_NDIRLB2, breaks = seq(0,1,0.01), 
+     main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old (simulated)",
+     xlab = "Ratio", ylab = "Frequency", col = "lightgoldenrod1"
+     #,freq = FALSE
+)
+
+# Draw the normal distribution
+#lines(seq(0,1,0.01), dnorm(seq(0,1,0.01), mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE), sqrt(var(clinic_data$ND_IntentRetLB2, na.rm = TRUE))), col = "blue")
+```
+
+This histogram looks way smoother than the one built with real data but, all in all, the profile is quite similar. The exception being the few counts of 0.9-1.0 that we found in the real data. I think that the problem here is that, working with data of ratios, we loose the information about the real number of procedures performed at each clinic. That could have an effect on the distribution that best modelled the data.
