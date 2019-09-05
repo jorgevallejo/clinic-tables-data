@@ -1407,6 +1407,17 @@ cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 ```
 Which doesn't let as reject the altenative hypothesis.
 
-In short, **the data doesn't show any correlation between the size of the clinic (measured in total number of ART cycles) and the ratio of living birts per transfer**.  
-Which is good news, since it means that little clinics are as effective at achieving living births after transfer as big clinics are.
+In short, **the data doesn't show any correlation between the size of the clinic (measured in total number of ART cycles) and the ratio of living births per transfer**.  
+Which is good news, since it means that little clinics are as effective at achieving living births after transfer as big clinics are. That is probably because the techniques used are mature, well known and widely taught, and the clinics maintain high standards of operation.
 
+
+# 7. Final assessment 
+I am going to focus on the conclussion of the regression analysis, which is the one that I find more interesting and, at the same time, open to refinement.
+
+One of the caveats that I have found is that I am working in this analysis with data that are ratios, meaning that we are losing some information. For example, clinics that in the year have obtained 1 living birth from 2 transfers (1/2) have the same success ratio that clinics that obtained 50 living birth from 100 transfers (50/100). In both cases the ratio is 0.5, but one case should be more reliable than the other.  
+To account for this maybe I should have used a different statistical test, or I could have use number of transfers instead of number of cycles to represent the size of the clinic. Those two concepts may not be interchangeable, though.
+
+Another problem is that we are including different variants of the same technic into a unique statistic, while those variants may be of different difficulty.  
+Also, we are not taking into account the age of the patient, which is known to be very important in the case of non-donor treatments. For the regression we have only used data from donor cases, but it may be true that age were relevant in these cases as well.
+
+If we were to repeat the analysis (which we are not due to time constraints), we could differentiate by technique variant (fresh or frozen egg; fresh or frozen embryo). But it wouldn't be possible to take the age of the patient into account, since that data are not included in the source file.
