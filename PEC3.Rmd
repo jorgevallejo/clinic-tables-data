@@ -49,8 +49,8 @@ A brief regression analysis from the variables in the dataset answering some que
 
 
 ### 7. Final assessment.
-Final assessment from source data and papaer:
-Do we have conclussions?
+Final assessment from source data and analysis:
+Do we have conclusions?
 Would be necessary a more advanced analysis?
 Would be necessary more data for obtaining another kind of information?
 
@@ -80,7 +80,7 @@ source_url <- "https://www.cdc.gov/art/artdata/docs/excel/FINAL-2017-Clinic-Tabl
 download.file(source_url, destfile = "../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", method = "curl")
 ```
 
-This is the dataset I am using for this practise study, but we could want to download datasets from previous years to do longitudinal studies:
+This is the dataset I am using for this practice study, but we could want to download datasets from previous years to do longitudinal studies:
 
 ```{r eval = FALSE}
 
@@ -167,7 +167,7 @@ str(clinic_data, list.len = length(clinic_data))
 
 
 In the structure can be seen a problem from this data source. Percentages and ratios are
-coded as text, not as numbers. It will be necessary pre-process the data from the table before we can work with them.
+coded as text, not as numbers. It will be necessary pre-processing the data from the table before we can work with them.
 
 Why numeric variables are detected  as characters. Ratios contain non-numeric symbols ("%", "/", "<"). What's the problem with the rest?
 
@@ -256,19 +256,19 @@ str(clinic_data, list.len = length(clinic_data))
 
 From those 165 variables, 17 are character strings, 25 are integers and 123 are non-integer numbers.
 
-Character variables correspond to descriptive data as: clinic name, city of the clinic, state, name of the medical director, and the disponibility of several services(oocyte donation, embryo donation, oocyte cryopreservation, embryo cryopreservation, services for single women, gestational carriers, if the clinic is a member of SART (Society for Assisted Reproductive Technology), and if the clinic owns an accredited embryology laboratory). Many of these variables will work as factors.
+Character variables correspond to descriptive data as: clinic name, city of the clinic, state, name of the medical director, and the availability of several services(oocyte donation, embryo donation, oocyte cryopreservation, embryo cryopreservation, services for single women, gestational carriers, if the clinic is a member of SART (Society for Assisted Reproductive Technology), and if the clinic owns an accredited embryology laboratory). Many of these variables will work as factors.
 
 Variables of type `integer`are:  
 *OrderID*: unique identifier for each register.  
-*ND_NumIntentRet*: number of intended oocyte retrievals (excluyendo donors). As in most of numerical variables in this table, this one is divided into five age categories, from less than 35 years old to more than 43 years old.  
+*ND_NumIntentRet*: number of intended oocyte retrievals (excluding donors). As in most of numerical variables in this table, this one is divided into five age categories, from less than 35 years old to more than 43 years old.  
 *ND_NumRetrieve*: number of oocyte retrievals (excluding donors). It doesn't match with intended retrievals because, sometimes, it is necessary to stop the retrieval process or a particular process is not successful.  
-*ND_NumTrans*: number of transfers (excluding donors). Transfer is the technique by with an embryo gronw in vitro is transferred from cultured to the patient uterus.  
+*ND_NumTrans*: number of transfers (excluding donors). Transfer is the technique by with an embryo grown in vitro is transferred from cultured to the patient uterus.  
 *Donor_NumTrans*: number of transfers from donor oocytes. This category is divided into four variables depending if the oocytes are fresh of frozen, fresh or frozen embryo, and embryo from donor.  
 *TotNumCycles*: total number of cycles. In assisted reproduction, the cycles include any process in which at least one of this conditions happen; 1) an assisted reproduction process is carried out, 2) the patient is subjected to ovarian stimulation or monitoring with the intent of having an ART procedure, or 3) frozen embryos have been thawed with the intent of transferring them to a patient.  
 *NumResearch*: number of excluded cycles for research.  
 
 Numeric variables are:  
-*ND_IntentRetLB*: Percentage of intended oocyte retrievals resulting in live births (exluding donors).  
+*ND_IntentRetLB*: Percentage of intended oocyte retrievals resulting in live births (excluding donors).  
 *ND_IntentRetSingleLB*: Percentage of intended oocyte retrievals resulting in singleton live births (excluding donors).  
 *ND_RetrieveLB*: Percentage of oocyte retrievals resulting in live births (excluding donors).  
 *ND_RetrieveSingleLB*: Percentage of oocyte retrievals resulting in singleton live births (excluding donors).  
@@ -292,7 +292,7 @@ Numeric variables are:
 *ReasonMale*: Percentage of cycles for male factor reason.  
 *ReasonEndo*: Percentage of cycles for endometriosis reason.  
 *ReasonTubal*: Percentage of cycles for tubal factor reason.  
-*ReasonOvul*: Percentage of cycles for ovulatory disfunction reason.  
+*ReasonOvul*: Percentage of cycles for ovulatory dysfunction reason.  
 *ReasonUterine*: Percentage of cycles for uterine factor reason.  
 *ReasonPGT*: Percentage of cycles for PGT reason.  
 *ReasonCarrier*: Percentage of cycles for gestational carrier reason.  
@@ -306,7 +306,7 @@ Numeric variables are:
 
 # 3. Probe questions
 
-Basic numeric summary for the total number of cycles by clinic (withouth taking patient age into account):
+Basic numeric summary for the total number of cycles by clinic (without taking patient age into account):
 ```{r}
 # Basic numeric summary
 statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
@@ -353,7 +353,7 @@ hist(clinic_data$Donor_NumTrans4,
 
 ```
 
-One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more usseful than a graph:
+One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more useful than a graph:
 
 ```{r}
 table(clinic_data$LabAccred)
@@ -380,7 +380,7 @@ text(seq(1.5,end_point,by=2), par("usr")[3]-0.25,
      labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
 ```
 
-Does the number of intended retrievals change with age? Let's use a boxplot graphic:
+Does the number of intended retrievals change with age? Let's use a box plot graphic:
 
 ```{r}
 # To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
@@ -408,7 +408,7 @@ axis(2, 10^pow)
 axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
 ```
 
-I suspect that the median diminishes with age group because donor eggs are prefered for older women instead of retrieval of their own eggs.
+I suspect that the median diminishes with age group because donor eggs are preferred for older women instead of retrieval of their own eggs.
 
 Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
@@ -768,7 +768,7 @@ In the case of the transfers to gestational carriers, the distributions by ages 
 
 The distribution of the ratio of the use of frozen embryos in transfer remains constant for all age groups, with their medians grazing the 0.7. It may be said the same for the use of embryos obtained by ICSI, except for the >=43 years old group, in which this technique seems slightly less common (even the median for the ratio lowers to 0.7 from around 0.8 in the rest of the groups).
 
-When observing the ratio of transfers in which at least one of the embryos have been subjected to PGT, the distributions by age are very similar. I was expecting a rise of the median for the more aged groups, since their eggs would be proner to experiment chromosomal abnormalities. Nevertheless, it may be that the more frequent use of donor eggs by those groups a reason to not use PGT more that the younger age groups.
+When observing the ratio of transfers in which at least one of the embryos have been subjected to PGT, the distributions by age are very similar. I was expecting a rise of the median for the more aged groups, since their eggs would be more prone to experiment chromosomal abnormalities. Nevertheless, it may be that the more frequent use of donor eggs by those groups a reason to not use PGT more that the younger age groups.
 
 ## Number of cycles
 
@@ -785,7 +785,7 @@ log_boxplot(x,xlab = "Age groups", ylab = "Number of cycles",
         col = "aliceblue")
 ```
 
-This results -in a way- have surprised me, since I was expecting more cycles for the higher age groups. It does not seem to be the case, although we don't know if the differences are significative.
+This results -in a way- have surprised me, since I was expecting more cycles for the higher age groups. It does not seem to be the case, although we don't know if the differences are significant.
 
 ## Fate of the cycles
 
@@ -911,9 +911,9 @@ text(seq(1,cycle_end_point,by=1), par("usr")[3]-0.05,
 
 The most frequent causes behind ART cycles are male factor (which encompasses all the causes dependent on the males), diminished ovarian reserve (DOR), and banking.  
 After that, come ovulatory dysfunction, tubal factor,infertility causes not specified and causes unexplained).
-The least frequent causes are endometriosis, uterine factor, PGT, recurrent pregnancy loss, causes not related to infertility but not specified, and -almost anecdotically- cycles for use a gestational carrier.
+The least frequent causes are endometriosis, uterine factor, PGT, recurrent pregnancy loss, causes not related to infertility but not specified, and -almost anecdotal- cycles for use a gestational carrier.
 
-What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles commited to gestational carriers is very low:
+What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles committed to gestational carriers is very low:
 
 ```{r}
 cycle_carrier_table <- clinic_data[clinic_data$CurrentClinicName1 == "WESTERN FERTILITY INSTITUTE" | clinic_data$CurrentClinicName1 == "REPRODUCTIVE SCIENCES MEDICAL CENTER", c("CurrentClinicName1", "TransCarrierAll", "ReasonCarrier")]
@@ -951,7 +951,7 @@ knitr::kable(cities_by_clinic,
              caption = "Number of clinics in each city")
 ```
 
-If we represent it in a barplot:
+If we represent it in a bar plot:
 
 ```{r}
 # Most of this code I adapted it from:
@@ -992,7 +992,7 @@ In total, we have `clinic cities` cities with at least a fertility clinic.
 
 According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places with some exceptions) in the country. Which means that there are `no_clinic_cities` cities with no fertility clinic.
 
-Let's add this datum to the table and represent it in a barplot. We will add counts with zero frequency as well, it will be useful later.
+Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
 ```{r}
 
@@ -1027,11 +1027,11 @@ barplot(height = (clinics_frequency_dataframe$Freq)+1, # To avoid errors convert
         )
 ```
 
-We can see that the number of cities with not even one fertility clinic is many more (by two orders of magnitude) than those that have only one clinic, which are one order of magnitud more than those that have at least two clinics. This signals that having a fertility clinics is a very improbable characteristics for a randomly chosed city in the United States.
+We can see that the number of cities with not even one fertility clinic is many more (by two orders of magnitude) than those that have only one clinic, which are one order of magnitude more than those that have at least two clinics. This signals that having a fertility clinics is a very improbable characteristics for a randomly chosen city in the United States.
 
 The Poisson distribution is used for frequency distribution of counts of rare but independent events. It is possible, then, that the frequency of clinics follows a binomial.
 
-We will try to reproduce the above barplot with a random generation for the Poisson distribution with parameter *lambda* equal to the mean count per sample.
+We will try to reproduce the above bar plot with a random generation for the Poisson distribution with parameter *lambda* equal to the mean count per sample.
 
 ```{r}
 # Generate a vector with the number of clinics in a city
@@ -1111,7 +1111,7 @@ negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
   (factorial(terms)*factorial(k-1))*(lambda/(lambda+k))^(terms)
 ```
 
-We will compare observed and expected frequencies using barplot, alternating the bars for observed and expected (*from* The R Book, *section 7.4.7*).
+We will compare observed and expected frequencies using bar plot, alternating the bars for observed and expected (*from* The R Book, *section 7.4.7*).
 
 ```{r}
 #Concatenate observed and expected frequencies in an alternating sequence.
@@ -1203,7 +1203,7 @@ The relation between mean and variance:
 var/mu
 ```
 
-The mean is quite higher than the variance, which leads away from the negative binomial distribution, but away as well from the Poisson distribution (which is characterized for having the same mean and variance). Maybe the answer is in the gamma distibution.
+The mean is quite higher than the variance, which leads away from the negative binomial distribution, but away as well from the Poisson distribution (which is characterized for having the same mean and variance). Maybe the answer is in the gamma distribution.
 
 ```{r}
 # Calculate the two parameter values for the gamma distribution
@@ -1266,7 +1266,7 @@ Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal 
 
 
 ## 5.4 A brief simulation model
-Let's say that the last studied variable, ND_IntentRetLB2, effectivelly follows a normal distribution with the calculated mean and variance. If we were to simulate its frequency distribution, would we get and histogram like that from the real data?
+Let's say that the last studied variable, ND_IntentRetLB2, effectively follows a normal distribution with the calculated mean and variance. If we were to simulate its frequency distribution, would we get and histogram like that from the real data?
 
 ```{r}
 # Use the same population size than in real data (exclude NA)
@@ -1293,7 +1293,7 @@ hist(simulated_NDIRLB2, breaks = seq(0,1,0.01),
 #lines(seq(0,1,0.01), dnorm(seq(0,1,0.01), mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE), sqrt(var(clinic_data$ND_IntentRetLB2, na.rm = TRUE))), col = "blue")
 ```
 
-This histogram looks way smoother than the one built with real data but, all in all, the profile is quite similar. The exception being the few counts of 0.9-1.0 that we found in the real data. I think that the problem here is that, working with data of ratios, we loose the information about the real number of procedures performed at each clinic. That could have an effect on the distribution that best modelled the data.
+This histogram looks way smoother than the one built with real data but, all in all, the profile is quite similar. The exception being the few counts of 0.9-1.0 that we found in the real data. I think that the problem here is that, working with data of ratios, we loose the information about the real number of procedures performed at each clinic. That could have an effect on the distribution that best modeled the data.
 
 
 
@@ -1339,7 +1339,7 @@ plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by 
 
 ```
 
-It is difficult preliminarly say anything from that graph, only that most of the info is given below 2000 cycles. Datapoints beyond 2000 cycles doesn't seem to convey any relationship between ratio and cycles.
+It is difficult to make a preliminary assessment from that graph, only that most of the info is given below 2000 cycles. Data points beyond 2000 cycles doesn't seem to convey any relationship between ratio and cycles.
 
 Let's try to carry out a regression:  
 
@@ -1405,19 +1405,19 @@ The significativity of that result is:
 ```{r}
 cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 ```
-Which doesn't let as reject the altenative hypothesis.
+Which doesn't let as reject the alternative hypothesis.
 
 In short, **the data doesn't show any correlation between the size of the clinic (measured in total number of ART cycles) and the ratio of living births per transfer**.  
 Which is good news, since it means that little clinics are as effective at achieving living births after transfer as big clinics are. That is probably because the techniques used are mature, well known and widely taught, and the clinics maintain high standards of operation.
 
 
 # 7. Final assessment 
-I am going to focus on the conclussion of the regression analysis, which is the one that I find more interesting and, at the same time, open to refinement.
+I am going to focus on the conclusion of the regression analysis, which is the one that I find more interesting and, at the same time, open to refinement.
 
 One of the caveats that I have found is that I am working in this analysis with data that are ratios, meaning that we are losing some information. For example, clinics that in the year have obtained 1 living birth from 2 transfers (1/2) have the same success ratio that clinics that obtained 50 living birth from 100 transfers (50/100). In both cases the ratio is 0.5, but one case should be more reliable than the other.  
 To account for this maybe I should have used a different statistical test, or I could have use number of transfers instead of number of cycles to represent the size of the clinic. Those two concepts may not be interchangeable, though.
 
-Another problem is that we are including different variants of the same technic into a unique statistic, while those variants may be of different difficulty.  
+Another problem is that we are including different variants of the same technique into a unique statistic, while those variants may be of different difficulty.  
 Also, we are not taking into account the age of the patient, which is known to be very important in the case of non-donor treatments. For the regression we have only used data from donor cases, but it may be true that age were relevant in these cases as well.
 
 If we were to repeat the analysis (which we are not due to time constraints), we could differentiate by technique variant (fresh or frozen egg; fresh or frozen embryo). But it wouldn't be possible to take the age of the patient into account, since that data are not included in the source file.
