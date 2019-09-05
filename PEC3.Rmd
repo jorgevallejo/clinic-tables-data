@@ -939,9 +939,11 @@ Let's take a variable; for example, the name of the city (CurrentCityClinic).
 How many clinics are in each city that has at least one clinic?
 
 ```{r}
-cities_by_clinic <- sort(table(clinic_data$CurrentClinicCity), decreasing = TRUE)
-# For the sake of simplicity I am assuming here that, in this list, we don't have any
-# cities with the same name in different states (although I know that we do).
+# The table below fuses variables for city and state, for distinguising
+# account those cities with the same name in different states.
+cities_by_clinic <- sort(table(
+  paste(clinic_data$CurrentClinicCity, clinic_data$CurrentClinicState, sep = ", ", collapse = NULL)),
+  decreasing = TRUE)
 
 knitr::kable(cities_by_clinic,
              format = "pandoc",
@@ -971,6 +973,7 @@ barplot(cities_by_clinic,
 ```
 
 We see that there are few cities with several clinics, and many with only two or three.
+
 We can get a contingency table:
 ```{r}
 clinics_frequency <- table(cities_by_clinic)
@@ -978,10 +981,10 @@ clinics_frequency <- table(cities_by_clinic)
 clinics_frequency
 ```
 
-Which means that we got 195 cities with one fertility clinic in them, and one city with 21 clinics in it. 
+Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r clinics_frequency[[length(clinics_frequency)]]` clinics in it. 
 
 ```{r}
-clinic_cities <- length(unique(clinic_data$CurrentClinicCity))
+clinic_cities <- length(unique(cities_by_clinic))
 no_clinic_cities <- 19495 - clinic_cities
 ```
 
