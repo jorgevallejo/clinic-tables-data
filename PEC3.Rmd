@@ -4,7 +4,7 @@ subtitle: "Assisted reproduction clinics data from the CDC"
 author: "Jorge Vallejo Ortega"
 output:
   md_document: default
-  pdf_document: default
+  #pdf_document: default
 # Next code is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding,
@@ -169,7 +169,7 @@ Why are numeric variables detected  as characters? Ratios contain non-numeric sy
 
 We will order alphabetically each column, see what happens.
 
-Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (`,`).
+Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (",").
 
 ```{r}
 ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
@@ -934,7 +934,6 @@ knitr::kable(cycle_carrier_table,
 ```
 
 I don't know which is the reason for that difference.
-XXXX Look if the knitted document shows that big blank space in the table XXXX
 
 
 
