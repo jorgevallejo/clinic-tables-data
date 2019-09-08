@@ -986,7 +986,7 @@ clinics_frequency <- table(cities_by_clinic)
 clinics_frequency
 ```
 
-Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r clinics_frequency[[length(clinics_frequency)]]` clinics in it. 
+Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
 
 ```{r}
 clinic_cities <- length(unique(cities_by_clinic))
