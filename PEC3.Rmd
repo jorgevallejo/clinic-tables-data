@@ -31,22 +31,17 @@ Explain source of data and include pertinent references. Justify why that specif
 Using R, display and explain the type of file that has been imported, which variables are included (type, classification,...) and anything else that seems relevant.  
 Include snapshots and R commands used for import and display of the data.
 
-
 ### 3. Probe questions.
 Make a minimum of six questions that probe the kind of information contained in the dataset.
-
 
 ### 4. Descriptive analysis of the data.
 The paper must include a parametric summary of the data and several graphic representations of said data.
 
-
 ### 5. Probability and simulation.
 A minimum of three questions answering probability questions and a question corresponding a short simulation model.
 
-
 ### 6. Regression analysis.
 A brief regression analysis from the variables in the dataset answering some question of interest.
-
 
 ### 7. Final assessment.
 Final assessment from source data and analysis:
@@ -67,7 +62,7 @@ Other datasets from previous years can be downloaded/looked up as well:
 https://www.cdc.gov/art/reports/archive.html
 
 
-# Datasets downloading
+## Datasets downloading
 
 ```{r eval = FALSE}
 
@@ -159,6 +154,7 @@ View(clinic_data)
 
 ```
 
+
 Let's see how each variable has been codified:
 
 ```{r}
@@ -169,7 +165,7 @@ str(clinic_data, list.len = length(clinic_data))
 In the structure can be seen a problem from this data source. Percentages and ratios are
 coded as text, not as numbers. It will be necessary pre-processing the data from the table before we can work with them.
 
-Why numeric variables are detected  as characters. Ratios contain non-numeric symbols ("%", "/", "<"). What's the problem with the rest?
+Why are numeric variables detected  as characters? Ratios contain non-numeric symbols ("%", "/", "<"). What's the problem with the rest?
 
 We will order alphabetically each column, see what happens.
 
@@ -202,6 +198,7 @@ clinic_data[, integers] <- lapply(clinic_data[, integers],
 
 str(clinic_data[, integers])
 ```
+
 
 Pre-processing the columns with ratios is a bit more complex. It is necessary to deal with three different cases:
 
@@ -333,6 +330,7 @@ testdf <- as.data.frame(testmatrix)
 testdf
 ```
 
+
 Frequency histogram displaying number of transfers from donor. Four graphs, each one for each of the starting states: fresh oocyte, frozen oocyte, frozen embryo, and donated embryo (in the other three cases it is only the oocyte which comes from a donor).
 
 ```{r}
@@ -353,11 +351,13 @@ hist(clinic_data$Donor_NumTrans4,
 
 ```
 
+
 One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more useful than a graph:
 
 ```{r}
 table(clinic_data$LabAccred)
 ```
+
 
 Nevertheless, for other qualitative data we could find more interesting to display them in a graph. For example, how many clinics offer ART, by state.
 
@@ -379,6 +379,7 @@ text(seq(1.5,end_point,by=2), par("usr")[3]-0.25,
      srt = 60, adj= 1, xpd = TRUE,
      labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
 ```
+
 
 Does the number of intended retrievals change with age? Let's use a box plot graphic:
 
@@ -409,6 +410,7 @@ axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
 ```
 
 I suspect that the median diminishes with age group because donor eggs are preferred for older women instead of retrieval of their own eggs.
+
 
 Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
@@ -484,6 +486,7 @@ for (var in variables) {
 
 ```
 
+
 ## Graphic representations
 
 ### Retrievals
@@ -547,6 +550,7 @@ boxplot(clinic_data[c(32:36)],
 
 I have had some problems with this image. Labels and points are more little than I wanted, but at least I have managed to include all three graphs into the same image.
 
+
 **Intended egg retrievals** take into account even those retrievals that failed because the procedure had to be interrupted, because no egg were retrieved or due to other causes.
 
 There are some statistics associated to the intended egg retrievals:
@@ -605,6 +609,7 @@ boxplot(clinic_data[c(77:81)],
 
 Also in this set of variables the effect of the age group seems clear in all of them.
 
+
 ## Transfers
 
 **Transfer** is a procedure in which an embryo is transferred, from laboratory culture, to the uterus.
@@ -661,7 +666,7 @@ log_boxplot(x,xlab = "Groups", ylab = "Number of transfers",
 boxplot(clinic_data[c(86:89)],
         xlab = "Groups",
         ylab = "Ratio",
-        main = bquote("Ratio of Transfers from Donor Resulting in Live Births \nby Hospital and Age Group"),
+        main = bquote("Ratio of Transfers from Donor Resulting in Live Births by Hospital and Age Group"),
         names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
         col = "lightgoldenrod1")
 
@@ -669,7 +674,7 @@ boxplot(clinic_data[c(86:89)],
 boxplot(clinic_data[c(90:93)],
         xlab = "Groups",
         ylab = "Ratio",
-        main = bquote("Ratio of Transfers from Donor Resulting in Singleton Live Births \nby Hospital and Age Group"),
+        main = bquote("Ratio of Transfers from Donor Resulting in Singleton Live Births by Hospital and Age Group"),
         names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
         col = "coral")
 ```
@@ -702,7 +707,7 @@ boxplot(clinic_data[c(123, 129, 135, 141)],
         col = "aliceblue")
 ```
 
-Seen the data represented, we can say that gestational carrier transfers are a minority in most of the clinics (median 0.02), with notable exceptions. On the other hand, both the use of frozen embryos (median 0.67), and the ICSI technique (median 0.80) are normalized and very frequent. Transfers of embryos that have undergone PGT have also a low ratio (median 0.23), but not as low as gestational carriers and the distribution of ratios is wider. The relative rarity of PGT testing is probably due to it being an expensive and time-consuming technique that usually is performed only when a possible genetic condition is suspected.
+Seen the data represented, we can say that gestational carrier transfers are a minority in most of the clinics (median 0.02), with notable exceptions. On the other hand, both the use of frozen embryos (median 0.67), and the ICSI technique (median 0.80) are normalized and very frequent. Transfers of embryos that have undergone PGT have also a low ratio (median 0.23), but not as low as gestational carriers and the distribution of ratios is wider. The relative rarity of PGT testing is probably due to it being an expensive and time-consuming technique, that usually is performed only when a possible genetic condition is suspected.
 
 I was wondering about those two clinics with a ratio higher than 0.6 of transfers to gestational carriers.
 
@@ -723,6 +728,7 @@ Pct of transfers to gestational carriers: `r noquote(paste((carrier_clinic$Trans
 For anyone interested, a quick query in a search engine provides us with the websites of the clinics:
 [Western Fertility Institute](https://www.westernfertility.com/)
 [Reproductive Sciences Medical Center](https://fertile.com/)
+
 
 We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, embryos obtained by ICSI, and embryos subjected to PGT.  
 I am assuming here that the age is that of the patient.
@@ -910,8 +916,8 @@ text(seq(1,cycle_end_point,by=1), par("usr")[3]-0.05,
 ```
 
 The most frequent causes behind ART cycles are male factor (which encompasses all the causes dependent on the males), diminished ovarian reserve (DOR), and banking.  
-After that, come ovulatory dysfunction, tubal factor,infertility causes not specified and causes unexplained).
-The least frequent causes are endometriosis, uterine factor, PGT, recurrent pregnancy loss, causes not related to infertility but not specified, and -almost anecdotal- cycles for use a gestational carrier.
+After that, come ovulatory dysfunction, tubal factor,infertility due to causes not specified and causes unexplained).
+The least frequent causes are endometriosis, uterine factor, PGT, recurrent pregnancy loss, causes not related to infertility but not specified, and -almost anecdotal- cycles for using a gestational carrier.
 
 What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles committed to gestational carriers is very low:
 
@@ -972,7 +978,7 @@ barplot(cities_by_clinic,
 #     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
 ```
 
-We see that there are few cities with several clinics, and many with only two or three.
+We see that there are few cities with several clinics, and many with only one or two.
 
 We can get a contingency table:
 ```{r}
@@ -988,9 +994,9 @@ clinic_cities <- length(unique(cities_by_clinic))
 no_clinic_cities <- 19495 - clinic_cities
 ```
 
-In total, we have `clinic cities` cities with at least a fertility clinic.
+In total, we have `r clinic_cities` cities with at least a fertility clinic.
 
-According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places with some exceptions) in the country. Which means that there are `no_clinic_cities` cities with no fertility clinic.
+According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places, with some exceptions) in the country. Which means that there are `r no_clinic_cities` cities with no fertility clinic.
 
 Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
@@ -1145,6 +1151,7 @@ barplot_legend(both)
 To the naked eye, the fit between both distributions is close. But we might want to measure the lack of fit between observed and expected distributions. At the moment, I don't know which would be the most adequate test.  
 Nevertheless, the assumptions of this probability distribution aren't valid. Each trial should be independent; however, it is reasonable to assume that the existence of a fertility clinic in a city depends on the city's population. Also, cities around a city that already has a fertility clinic may have less probability of having a fertility clinic.
 
+
 ## 5.2 Probability distribution of variable Donor_NumTrans2.
 Let's take another variable; Donor_NumTrans2 (Number of transfers of fresh embryos from a frozen egg from donor).
 Which distribution follows this variable?
@@ -1152,7 +1159,7 @@ Which distribution follows this variable?
 ```{r}
 donor_trans_2 <- clinic_data$Donor_NumTrans2
 
-table(donor_trans_2)
+#table(donor_trans_2)
 
 hist(donor_trans_2, breaks = (-0.5:170.5), ylim = c(0, 200), xlim = c(0, 200),
      main = "Transfers of fresh embryos from a frozen egg from donor",
@@ -1230,9 +1237,9 @@ Let's take a last variable for a probability question; ND_IntentRetLB2 (Ratio of
 Which distribution follows this variable?
 
 ```{r}
-table(clinic_data$ND_IntentRetLB2)
+#table(clinic_data$ND_IntentRetLB2)
 
-max(table(clinic_data$ND_IntentRetLB2))
+#max(table(clinic_data$ND_IntentRetLB2))
 
 hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01), 
      main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
@@ -1370,7 +1377,7 @@ plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by 
 abline(RegModel, col = "red")
 ```
 
-The correlation coefficient is only 0.008369, which I interpret as a very poor adjust rending meaningless the values of the model. It may be due to a much greater variance for low number of cycles compared with the variance for high number of cycles; while the model used assumes that the variables follow normal distribution and homoscedasticity.
+The correlation coefficient is only 0.008369, which I interpret as a very poor adjust, rending meaningless the values of the model. It may be due to a much greater variance for low number of cycles compared with the variance for high number of cycles; the model used assumes that the variables follow normal distribution and homoscedasticity.
 
 Let's check those assumptions:
 
@@ -1408,7 +1415,8 @@ cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 Which doesn't let as reject the alternative hypothesis.
 
 In short, **the data doesn't show any correlation between the size of the clinic (measured in total number of ART cycles) and the ratio of living births per transfer**.  
-Which is good news, since it means that little clinics are as effective at achieving living births after transfer as big clinics are. That is probably because the techniques used are mature, well known and widely taught, and the clinics maintain high standards of operation.
+Which is good news, since it would mean that little clinics are as effective at achieving living births after transfer as big clinics are. That is probably because the techniques used are mature, well known and widely taught, and the clinics maintain high standards of operation.
+
 
 
 # 7. Final assessment 
