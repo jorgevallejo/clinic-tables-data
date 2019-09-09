@@ -64,7 +64,7 @@ https://www.cdc.gov/art/reports/archive.html
 
 ## Datasets downloading
 
-```{r eval = FALSE}
+```{r download-2017, eval = FALSE}
 
 # The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
 # be downloaded each time the .Rmd file is knitted to produce a report.
@@ -77,7 +77,7 @@ download.file(source_url, destfile = "../datos/FINAL-2017-Clinic-Table-Dataset.x
 
 This is the dataset I am using for this practice study, but we could want to download datasets from previous years to do longitudinal studies:
 
-```{r eval = FALSE}
+```{r download-previous-years, eval = FALSE}
 
 # The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
 # be downloaded each time the .Rmd file is knitted to produce a report.
@@ -137,7 +137,7 @@ The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from as
 
 I am interested in the data broke down by clinic. Therefore, I will import the data from sheets **Clinic Table Dictionary** and **Clinic Table Data Records**.
 
-```{r warning=FALSE}
+```{r import-data-from-excel, warning=FALSE}
 require("xlsx")
 clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
                                endRow = 165, encoding = "UTF-8")
@@ -157,7 +157,7 @@ View(clinic_data)
 
 Let's see how each variable has been codified:
 
-```{r}
+```{r list-codified-variables}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
@@ -171,7 +171,7 @@ We will order alphabetically each column, see what happens.
 
 Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (",").
 
-```{r}
+```{r order-values}
 ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
 
 View(ordenadas)
@@ -183,7 +183,7 @@ Next, we will correct those variables that should be `integer` o `numeric`.
 Code adapted from a question in Stack Overflow:
 [How to read data when some numbers contain commas as thousand separator?](https://stackoverflow.com/questions/1523126/how-to-read-data-when-some-numbers-contain-commas-as-thousand-separator)
 
-```{r}
+```{r delete-commas}
 # Vectors that refer the columns that should be integers
 # and the columns that should be ratios.
 
@@ -210,7 +210,7 @@ I will remove the symbol with `gsub`. Besides, I will divide the result by 100, 
 
 3) Data as fractions. Even a bit more complex. I will use regular expressions to isolate numerator and denominator, and will return the result of the division as a ratio.
 
-```{r warning=FALSE}
+```{r process-fractions, warning=FALSE}
 # This function processes ratios expressed as fractions.
 divide <- function(x){
   numerator <- as.numeric(gsub(" .*$", "", x))
@@ -247,7 +247,7 @@ The use of chunk option `warning=FALSE` prevents the displaying of multiple `NAs
 
 I might have allowed myself to get carried along in passion choosing a file too big. The table contains 165 variables. It is not a ridiculous number, but may be not easy enough to handle for the scope of this study.
 
-```{r}
+```{r list-of-variables}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
@@ -304,7 +304,7 @@ Numeric variables are:
 # 3. Probe questions
 
 Basic numeric summary for the total number of cycles by clinic (without taking patient age into account):
-```{r}
+```{r summary-total-cycles}
 # Basic numeric summary
 statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
 variables <- c("TotNumCyclesAll")
@@ -333,7 +333,7 @@ testdf
 
 Frequency histogram displaying number of transfers from donor. Four graphs, each one for each of the starting states: fresh oocyte, frozen oocyte, frozen embryo, and donated embryo (in the other three cases it is only the oocyte which comes from a donor).
 
-```{r}
+```{r histograms-transfers-donor}
 par(mfrow = c(2, 2)) # generate a 2x2 array for printing the graphs.
 
 xlab <- "Transfers by clinic"
@@ -354,14 +354,14 @@ hist(clinic_data$Donor_NumTrans4,
 
 One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more useful than a graph:
 
-```{r}
+```{r accreditation-table}
 table(clinic_data$LabAccred)
 ```
 
 
 Nevertheless, for other qualitative data we could find more interesting to display them in a graph. For example, how many clinics offer ART, by state.
 
-```{r}
+```{r clinics-by-state}
 # Most of this code I adapted it from:
 # https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
 
@@ -383,7 +383,7 @@ text(seq(1.5,end_point,by=2), par("usr")[3]-0.25,
 
 Does the number of intended retrievals change with age? Let's use a box plot graphic:
 
-```{r}
+```{r boxplot-intended-retrievals-by-age}
 # To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
 intended_retrievals <- clinic_data[,7:11]
 intended_retrievals[intended_retrievals == 0] <- 1
@@ -414,7 +414,7 @@ I suspect that the median diminishes with age group because donor eggs are prefe
 
 Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
-```{r}
+```{r boxplot-intended-retrievals-live-births}
 # Ratio of intended retrievals resulting in live births, by age
 pct_int_ret <- clinic_data[,12:16]
 
@@ -437,7 +437,7 @@ In this section we will accomplish a more thorough exploration of our variables,
 
 Summary of services offered by the clinics.
 
-```{r}
+```{r summary-services}
 # Columns including the data for the services: 155-160 and 162.
 services <- clinic_data[c(155:160, 162)]
 
@@ -460,7 +460,7 @@ lapply(services, table)
 
 Descriptive summary of numeric variables:
 
-```{r}
+```{r summary-numeric-variables}
 
 variables <- colnames(clinic_data[c(7:154, 163)])
 statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
@@ -493,7 +493,7 @@ for (var in variables) {
 
 **Egg retrieval** is a procedure to collect the eggs contained in the ovarian follicles.
 
-```{r}
+```{r log-boxplot-function}
 # Since I think I am going to need this code several times, I will wrap it into a function.
 
 log_boxplot <- function(x, ...){
@@ -519,7 +519,7 @@ log_boxplot <- function(x, ...){
 }
 ```
 
-```{r fig.height = 15, fig.width = 8}
+```{r boxplot-egg-retrieval, fig.height = 15, fig.width = 8}
 # Let's actually draw the graphs.
 
 par(mfcol = c(3, 1))
@@ -555,7 +555,7 @@ I have had some problems with this image. Labels and points are more little than
 
 There are some statistics associated to the intended egg retrievals:
 
-```{r fig.height = 30, fig.width = 8}
+```{r boxplot-intended-egg-retrievals, fig.height = 30, fig.width = 8}
 
 par(mfcol = c(6, 1))
 
@@ -616,7 +616,7 @@ Also in this set of variables the effect of the age group seems clear in all of 
 
 Like above, we will represent number of transfers, percentage of transfers resulting in live births, and those resulting in singleton live births.
 
-```{r fig.height = 15, fig.width = 8}
+```{r boxplot-transfers, fig.height = 15, fig.width = 8}
 
 par(mfcol = c(3, 1))
 
@@ -651,7 +651,7 @@ All in all, even the median ratio for the youngest age group is not that great, 
 
 **Transfers from a donor** is a possibility when the own oocytes from the patient can not be used.
 
-```{r fig.height = 15, fig.width = 8}
+```{r boxplot-transfers-from-donor, fig.height = 15, fig.width = 8}
 
 par(mfcol = c(3, 1))
 
@@ -696,7 +696,7 @@ A *gestational carrier* is a woman who gestates an embryo originated from the eg
 
 In the next graph we will represent the data of the ratio of transfers that use a gestational carriers, those that use frozen embryos, those in which PGT has been performed, and those in which at least one embryo has been obtained by ICSI:
 
-```{r fig.width = 8}
+```{r boxplot-GFIP, fig.width = 8}
 
 # Ratio of transfers (gestational carriers, frozen embryos, ICSI)
 boxplot(clinic_data[c(123, 129, 135, 141)],
@@ -711,7 +711,7 @@ Seen the data represented, we can say that gestational carrier transfers are a m
 
 I was wondering about those two clinics with a ratio higher than 0.6 of transfers to gestational carriers.
 
-```{r}
+```{r clinics-high-gestational}
 carrier_clinic <- clinic_data[clinic_data$TransCarrierAll > 0.6,]
 
 carrier_clinic$CurrentClinicName1
@@ -720,20 +720,20 @@ carrier_clinic$CurrentClinicState
 paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = "")
 ```
 
-Clinic: `r noquote(carrier_clinic$CurrentClinicName1)`
-City: `r noquote(carrier_clinic$CurrentClinicCity)`
-State: `r noquote(carrier_clinic$CurrentClinicState)`
+Clinics: `r noquote(carrier_clinic$CurrentClinicName1)`  
+Cities: `r noquote(carrier_clinic$CurrentClinicCity)`  
+States: `r noquote(carrier_clinic$CurrentClinicState)`  
 Pct of transfers to gestational carriers: `r noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
 
-For anyone interested, a quick query in a search engine provides us with the websites of the clinics:
-[Western Fertility Institute](https://www.westernfertility.com/)
+For anyone interested, a quick query in a search engine provides us with the websites of the clinics:  
+[Western Fertility Institute](https://www.westernfertility.com/)  
 [Reproductive Sciences Medical Center](https://fertile.com/)
 
 
 We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, embryos obtained by ICSI, and embryos subjected to PGT.  
 I am assuming here that the age is that of the patient.
 
-```{r fig.height = 20, fig.width = 8}
+```{r boxplot-ratio-transfers-by-age, fig.height = 20, fig.width = 8}
 
 par(mfcol = c(4, 1))
 
@@ -781,7 +781,7 @@ When observing the ratio of transfers in which at least one of the embryos have 
 ART cycles start when a woman begins taking fertility drugs or having her ovaries monitored for follicle production. If eggs are produced, the cycle progresses to egg retrieval. The eggs are combined with sperm to create embryos and at least one embryo is selected for transfer. If implantation of the embryo occurs, the cycle may progress to clinical pregnancy and sometimes live birth.  
 Keep in mind that the woman may not necessarily be the patient, but a donor. The egg may be frozen and thawed before fertilization, or the embryo may be frozen and thawed before implantation.
 
-```{r fig.width = 8}
+```{r boxplot-cycles-by-age, fig.width = 8}
 
 # Total number of cycles by age group
 x <- clinic_data[,94:98]
@@ -799,7 +799,7 @@ Not all cycles end successfully, and not all cycles are started to achieve pregn
 
 In the dataset we have three of such cases: Cycles canceled prior to retrieval or thaw, cycles stopped between retrieval and transfer or banking, and cycles for fertility preservation.
 
-```{r fig.width = 8}
+```{r boxplot-interruted-cycles, fig.width = 8}
 
 # Fate of cycles
 boxplot(clinic_data[c(105, 111, 117)],
@@ -814,15 +814,15 @@ It is curious that cycles for fertility preservation are the less common ones, b
 
 We can easily extract the name and other data of the clinic from the database:
 
-```{r}
+```{r fertility-preservation-clinic}
 preserv_clinic <- clinic_data[clinic_data$CycleFertPresAll > 0.8,]
 
 ```
 
-Clinic: `r noquote(preserv_clinic$CurrentClinicName1)`
-City: `r noquote(preserv_clinic$CurrentClinicCity)`
-State: `r noquote(preserv_clinic$CurrentClinicState)`
-Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`
+Clinic: `r noquote(preserv_clinic$CurrentClinicName1)`  
+City: `r noquote(preserv_clinic$CurrentClinicCity)`  
+State: `r noquote(preserv_clinic$CurrentClinicState)`  
+Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`  
 Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
 
 For anyone interested, a quick query in a search engine provides us with the website of the clinic:
@@ -833,7 +833,7 @@ For anyone interested, a quick query in a search engine provides us with the web
 
 Cancelled cycles are cycles that have been started but where cancelled prior to the retrieval of fresh eggs or the thawing of cryopreserved eggs. Here, we want to see if the age of the patient may have any effect on the ratio of cancelled cycles.
 
-```{r fig.width = 8}
+```{r boxplot-cancelled-cycles, fig.width = 8}
 
 # Cancelled cycles by age group
 boxplot(clinic_data[c(100:104)],
@@ -852,7 +852,7 @@ Also, keep in mind that the ratio is not of the total of cycles, but the cycles 
 
 Stopped cycles are those cycles that started but where cancelled between retrieval and transfer (or banking). We will visualize these data to see if the age of the patient may have an effect on the ratio of stopped cycles.
 
-```{r fig.width = 8}
+```{r boxplot-stopped-cycles, fig.width = 8}
 
 # Stopped cycles by age group
 boxplot(clinic_data[c(106:110)],
@@ -870,7 +870,7 @@ This graphic is similar to that of cancelled cycles by age. There is no much dif
 
 Fertility preservation cycles are those started with the intent to freeze all resulting eggs or embryos for 12 months or longer in order to preserve future fertility. Let's see which age group makes more use of this tool.
 
-```{r fig.width = 8}
+```{r boxplot-fertility-preservation, fig.width = 8}
 
 # Stopped cycles by age group
 boxplot(clinic_data[c(112:116)],
@@ -881,14 +881,15 @@ boxplot(clinic_data[c(112:116)],
         col = "coral")
 ```
 
-This case shows an interesting trend in which the medians are slightly higher in the groups ranging 35 to 42 years old patients; the distribution of the data is quite narrow around the median in all groups; and the distribution in the group of patients older than 43 year has almost collapsed on the value of the median (0.0). Nevertheless, there is an impressive quantity of high outliers in every group (an outlier here taken as any data point more than 1.5 times the length of the box).  
+This case shows an interesting trend in which the medians are slightly higher in the groups ranging 35 to 42 years old patients; the distribution of the data is quite narrow around the median in all groups; and the distribution in the group of patients older than 43 year has almost collapsed on the value of the median (0.0).  
+Nevertheless, there is an impressive quantity of high outliers in every group (an outlier here taken as any data point more than 1.5 times the length of the box).  
 That trend in these distributions is more or less expected since patients of more age would prefer to achieve pregnancy as soon as possible instead of saving eggs for the future. While younger patients may be still developing their professional careers and would want to preserve good quality eggs for later in life. Also, if the cause to wanting to store the eggs is related to an illness, older women are more probable to have already had children, while younger women may not, and then would want to store healthy egg before a treatment that could sterilize them.
 
 ## Cause of the cycles
 
 In this section we will examine the data that describe the reason behind the ART cycles performed by the clinics. Most of them are directly related to infertility (male factor, endometriosis, tubal factor, and so on), while some are aimed to prevent genetic disorders (PGT), preservation of fertility (banking) or unknown.
 
-```{r fig.width = 8}
+```{r boxplot-cause-of-cycles, fig.width = 8}
 
 # Cause of the cycles
 boxplot(clinic_data[c(142:154)],
@@ -921,7 +922,7 @@ The least frequent causes are endometriosis, uterine factor, PGT, recurrent preg
 
 What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles committed to gestational carriers is very low:
 
-```{r}
+```{r table-ratio-transfers-to-ratio-gestational}
 cycle_carrier_table <- clinic_data[clinic_data$CurrentClinicName1 == "WESTERN FERTILITY INSTITUTE" | clinic_data$CurrentClinicName1 == "REPRODUCTIVE SCIENCES MEDICAL CENTER", c("CurrentClinicName1", "TransCarrierAll", "ReasonCarrier")]
 
 knitr::kable(cycle_carrier_table,
@@ -943,7 +944,7 @@ I don't know which is the reason for that difference.
 Let's take a variable; for example, the name of the city (CurrentCityClinic).
 How many clinics are in each city that has at least one clinic?
 
-```{r}
+```{r table-clinics-by-city}
 # The table below fuses variables for city and state, for distinguising
 # account those cities with the same name in different states.
 cities_by_clinic <- sort(table(
@@ -958,7 +959,7 @@ knitr::kable(cities_by_clinic,
 
 If we represent it in a bar plot:
 
-```{r}
+```{r barplot-clinics-by-city}
 # Most of this code I adapted it from:
 # https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
 
@@ -970,17 +971,20 @@ barplot(cities_by_clinic,
         # This adjusts the maxim value in the y axis:
         ylim = c(0,4+max(table(clinic_data$CurrentClinicCity))),
         xaxt = "n", # Avoids plotting the names in the x axis.
-        space = 1)
+        space = 1,
+        main = "Number of clinics by city",
+        xlab = "Cities (names not represented due to lack of space)",
+        ylab = "Clinics")
 
 #text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
 #     srt = 60, adj= 1, xpd = TRUE,
 #     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
 ```
 
-We see that there are few cities with several clinics, and many with only one or two.
+We see that there are few cities with several clinics, and many cities with only one or two clinics.
 
 We can get a contingency table:
-```{r}
+```{r contingency-table-clinics-frequency}
 clinics_frequency <- table(cities_by_clinic)
 
 clinics_frequency
@@ -988,7 +992,7 @@ clinics_frequency
 
 Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
 
-```{r}
+```{r cities-with-and-without-clinics}
 clinic_cities <- length(cities_by_clinic)
 no_clinic_cities <- 19495 - clinic_cities
 ```
@@ -999,7 +1003,7 @@ According to the [United States Census Bureau](https://factfinder.census.gov/fac
 
 Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
-```{r}
+```{r barplot-clinics-by-city}
 
 clinics_frequency_dataframe <- rbind(
   data.frame(cities_by_clinic = as.character(c(0, 9:20)),
@@ -1021,7 +1025,7 @@ barplot(height = clinics_frequency_dataframe$Freq,
 
 If we represent it in a logarithmic scale:
 
-```{r}
+```{r barplot-clinics-by-city-logarithmic}
 
 barplot(height = (clinics_frequency_dataframe$Freq)+1, # To avoid errors converting to log
         names.arg = clinics_frequency_dataframe$cities_by_clinic,
@@ -1038,7 +1042,7 @@ The Poisson distribution is used for frequency distribution of counts of rare bu
 
 We will try to reproduce the above bar plot with a random generation for the Poisson distribution with parameter *lambda* equal to the mean count per sample.
 
-```{r}
+```{r table-simulated-Poisson}
 # Generate a vector with the number of clinics in a city
 counts <- as.numeric(as.character(clinics_frequency_dataframe$cities_by_clinic))
 
@@ -1061,19 +1065,19 @@ The data shown in the table doesn't look like a good match for our data.
 
 Another possibility is the **negative binomial distribution**, for cases in which the variance is much greater than the mean.  
 In our case:
-```{r}
+```{r variance-mean-ratio}
 var(vector_counts)/mean(vector_counts)
 ```
 
 The variable is three times the mean. It would be 1 if the data were Poisson distributed.  
 Let's make a rough estimate of the clumping parameter *k*:
-```{r}
+```{r k-parameter-estimate}
 # The formulae are adapted from _The R Book_, section 7.4.7
 mean(vector_counts)^2/(var(vector_counts)-mean(vector_counts))
 ```
 
 A function that computes the maximum likelihood estimate of **k** from a vector of frequencies of counts:
-```{r}
+```{r kfit-function}
 #From _The R Book_, section 7.4.7
 kfit <- function(x) {
   lhs <- numeric()
@@ -1101,14 +1105,14 @@ kfit <- function(x) {
 ```
 
 Trying it with the clinics count data:
-```{r}
+```{r max-like-estimate-of-k-for-freq}
 kfit(freq)
 ```
 So, the maximum likelihood of _k_ is this case is 3.11e-07.
 
 How would a negative binomial distribution with a mean of `r lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r clinic_cities+no_clinic_cities` in this case).
 
-```{r}
+```{r expected-frequencies-neg-binom}
 cities <- clinic_cities+no_clinic_cities
 k <- 3.11e-07
 terms <- (0:(length(freq)-1))
@@ -1118,7 +1122,7 @@ negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
 
 We will compare observed and expected frequencies using bar plot, alternating the bars for observed and expected (*from* The R Book, *section 7.4.7*).
 
-```{r}
+```{r barplot-observed-expected}
 #Concatenate observed and expected frequencies in an alternating sequence.
 # Put the observed counts (freq) in the odd-numbered bars and the expected counts
 # (negative_binomial) in the even-numbered bars.
@@ -1155,7 +1159,7 @@ Nevertheless, the assumptions of this probability distribution aren't valid. Eac
 Let's take another variable; Donor_NumTrans2 (Number of transfers of fresh embryos from a frozen egg from donor).
 Which distribution follows this variable?
 
-```{r}
+```{r histogram-donornumtrans2}
 donor_trans_2 <- clinic_data$Donor_NumTrans2
 
 #table(donor_trans_2)
@@ -1169,7 +1173,7 @@ This once again looks like a Poisson distribution or a negative binomial, where 
 Nevertheless, we may think that the number of transfers is heavily dependent on the size of the clinic. We would want to look instead at the ratio of this kind of transfers to the total number of transfers in each clinic.  
 For each clinic, we need to divide this variable (Donor_NumTrans2) between the sum of all the variables involving transfers from donor (Donor_NumTrans1 to 4):
 
-```{r}
+```{r histogram-ratios-donornumtrans2}
 trans_donor_variables <- c("Donor_NumTrans1","Donor_NumTrans2","Donor_NumTrans3","Donor_NumTrans4")
 
 ratio_donor_trans2 <- clinic_data$Donor_NumTrans2 / rowSums(clinic_data[,trans_donor_variables])
@@ -1182,7 +1186,7 @@ Keep in mind that, this time, we are excluding those clinics with no transfers f
 Still, the most frequent by large is the ratio ranging from 0 to 10%.  
 Since the values of _x_ (the ratio) are continuous and bounded between 0 and 1, I would say that it could be described by the _beta probability distribution_.
 
-```{r}
+```{r histogram-ratiodonortrans2-beta-distribution}
 # From https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
 
 estBetaParams <- function(mu, var) {
@@ -1205,13 +1209,13 @@ lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
 
 I does not look bad. Although I wonder if we could use the negative binomial (or the gamma distribution).  
 The relation between mean and variance:
-```{r}
+```{r var-mu-ratio}
 var/mu
 ```
 
 The mean is quite higher than the variance, which leads away from the negative binomial distribution, but away as well from the Poisson distribution (which is characterized for having the same mean and variance). Maybe the answer is in the gamma distribution.
 
-```{r}
+```{r histogram-ratiodonortrans2-gamma-dist}
 # Calculate the two parameter values for the gamma distribution
 rate <- mean(ratio_donor_trans2, na.rm = TRUE)
 shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
@@ -1235,7 +1239,7 @@ In short, **I am accepting the beta distribution as the probability distribution
 Let's take a last variable for a probability question; ND_IntentRetLB2 (Ratio of intended retrievals resulting in live births for patients aged 35-37 years old).
 Which distribution follows this variable?
 
-```{r}
+```{r histogram-ndintretlb2}
 #table(clinic_data$ND_IntentRetLB2)
 
 #max(table(clinic_data$ND_IntentRetLB2))
@@ -1247,7 +1251,7 @@ hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01),
 
 This looks like a normal distribution skewed to the right. Maybe a gamma, then.
 
-```{r}
+```{r histogram-ndintretlb2-normal-gamma}
 # Draw histogram with density instead of frequency of counts
 hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01), 
      main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
@@ -1274,7 +1278,7 @@ Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal 
 ## 5.4 A brief simulation model
 Let's say that the last studied variable, ND_IntentRetLB2, effectively follows a normal distribution with the calculated mean and variance. If we were to simulate its frequency distribution, would we get and histogram like that from the real data?
 
-```{r}
+```{r histogram-simulated-ndintretlb2}
 # Use the same population size than in real data (exclude NA)
 n_NDIRLB2 <- sum(!is.na(clinic_data$ND_IntentRetLB2))
 
@@ -1310,7 +1314,7 @@ Is there a relationship between clinic size and the percentage of transfers that
 We can use the total number of ART cycles (variable `TotNumCyclesAll`) as a measure of the size of the clinic.  
 Getting the number of transfers and the percentage of transfers that resulted in live birth is a bit tricky:
 
-```{r}
+```{r calculate-derived-variables}
 # Calculate number of living births for each group of transfers
 columns_NumTrans <- c(37:41, 82:85)
 columns_ratioTransLB <- c(42:46, 86:89)
@@ -1340,7 +1344,7 @@ TotRatioLB <- TotNumLB/TotNumTransfers
 
 Let's try a plot diagram to explore the relation between ART cycles and ratio of living births by transfer:
 
-```{r}
+```{r plot-cycles-ratio-living-births-transfer}
 plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
 
 ```
@@ -1351,14 +1355,14 @@ Let's try to carry out a regression:
 
 If we calculate the correlation between both variables:
 
-```{r}
+```{r correlation-cycles-ratioLB}
 cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")
 ```
 
 There doesn't seem to be any correlation or, if there is any, it is very weak.
 
 But let's work in the regression model:
-```{r}
+```{r regression-model-cycles-ratioLB}
 RegModel <- lm(TotRatioLB~clinic_data$TotNumCyclesAll)
 
 summary(RegModel)
@@ -1370,7 +1374,7 @@ Y = 1.103e-05x + 0.419
 
 Let's add it to the graph:
 
-```{r}
+```{r plot-cycles-ratioLB-least-squares-line}
 plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
 
 abline(RegModel, col = "red")
@@ -1380,7 +1384,7 @@ The correlation coefficient is only 0.008369, which I interpret as a very poor a
 
 Let's check those assumptions:
 
-```{r fig.height = 20, fig.width = 8}
+```{r qqplots-for-cycles-and-ratioLB, fig.height = 20, fig.width = 8}
 # Check normality with qqplot
 par(mfcol = c(4,1))
 
@@ -1400,7 +1404,7 @@ hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
 
 It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer look more like it, but if we test it with Shapiro-Wilk:
 
-```{r}
+```{r shapiro-ratioLB}
 shapiro.test(TotRatioLB)
 ```
 
@@ -1408,7 +1412,7 @@ With a p-value so low be reject the null hypothesis of normality. We may instead
 The result was `r cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
 which means that there is not correlation between the variables.  
 The significativity of that result is:
-```{r}
+```{r correlation-cycles-ratioLB}
 cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 ```
 Which doesn't let as reject the alternative hypothesis.
