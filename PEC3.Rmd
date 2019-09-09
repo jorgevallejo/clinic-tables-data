@@ -333,21 +333,32 @@ testdf
 
 Frequency histogram displaying number of transfers from donor. Four graphs, each one for each of the starting states: fresh oocyte, frozen oocyte, frozen embryo, and donated embryo (in the other three cases it is only the oocyte which comes from a donor).
 
-```{r histograms-transfers-donor}
+```{r histograms-transfers-donor, fig.cap="Bar width represents a range of 10 transfers"}
 par(mfrow = c(2, 2)) # generate a 2x2 array for printing the graphs.
 
 xlab <- "Transfers by clinic"
 ylab <- "Frequency"
 
-hist(clinic_data$Donor_NumTrans1,
-     main = "Fresh embryo from fresh oocyte", xlab = xlab, ylab = ylab, col = "blue")
-hist(clinic_data$Donor_NumTrans2,
-     main = "Fresh embryo from frozen oocyte", xlab = xlab, ylab = ylab, col = "tomato")
-hist(clinic_data$Donor_NumTrans3,
-     main = "Frozen embryo", xlab = xlab, ylab = ylab, col = "yellow")
-hist(clinic_data$Donor_NumTrans4,
-     main = "Embryo from donor", xlab = xlab, ylab = ylab, col = "green")
+# For better comparing the histograms, the values of the x-axis, y-axis, and the bins will be the same for all four variables.
+htd_xlim <- c(0,  max(clinic_data[,c("Donor_NumTrans1","Donor_NumTrans2","Donor_NumTrans3","Donor_NumTrans4")]+10))
+htd_ylim <- c(0, 400)
 
+hist(clinic_data$Donor_NumTrans1,
+     main = "Fresh embryo from fresh oocyte", xlab = xlab, ylab = ylab,
+     col = "blue", xlim = htd_xlim, ylim = htd_ylim,
+     breaks = seq(0, max(clinic_data$Donor_NumTrans1)+5, 10))
+hist(clinic_data$Donor_NumTrans2,
+     main = "Fresh embryo from frozen oocyte", xlab = xlab, ylab = ylab,
+     col = "tomato", xlim = htd_xlim, ylim = htd_ylim,
+     breaks = seq(0, max(clinic_data$Donor_NumTrans2)+5, 10))
+hist(clinic_data$Donor_NumTrans3,
+     main = "Frozen embryo", xlab = xlab, ylab = ylab,
+     col = "yellow", xlim = htd_xlim, ylim = htd_ylim,
+     breaks = seq(0, max(clinic_data$Donor_NumTrans3)+10, 10))
+hist(clinic_data$Donor_NumTrans4,
+     main = "Embryo from donor", xlab = xlab, ylab = ylab,
+     col = "green", xlim = htd_xlim, ylim = htd_ylim,
+     breaks = seq(0, max(clinic_data$Donor_NumTrans4)+5, 10))
 
 ```
 
