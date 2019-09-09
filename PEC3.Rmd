@@ -388,7 +388,7 @@ barplot(sort(table(clinic_data$CurrentClinicState), decreasing = TRUE),
 
 text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
      srt = 60, adj= 1, xpd = TRUE,
-     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
+     labels = paste(names(sort(table(clinic_data$CurrentClinicState), decreasing = TRUE))), cex=0.55)
 ```
 
 
