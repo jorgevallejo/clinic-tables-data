@@ -1108,7 +1108,7 @@ kfit <- function(x) {
     rhs[i] <- sum(a/(k + j))
   }
   k <- seq(k1/1.2, 2*k1, 0.001)
-  plot(k, abs(lhs-rhs), xlab="k", ylab = "Difference", type = "l", col = "red")
+  #plot(k, abs(lhs-rhs), xlab="k", ylab = "Difference", type = "l", col = "red")
   d <- min(abs(lhs-rhs))
   sdd <- which(abs(lhs-rhs)==d)
   k[sdd]
@@ -1117,15 +1117,17 @@ kfit <- function(x) {
 
 Trying it with the clinics count data:
 ```{r max-like-estimate-of-k-for-freq}
-kfit(freq)
+k_for_freq <- kfit(freq)
+
+k_for_freq
 ```
-So, the maximum likelihood of _k_ is this case is 3.11e-07.
+So, the maximum likelihood of _k_ is this case is `r k_for_freq`.
 
 How would a negative binomial distribution with a mean of `r lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r clinic_cities+no_clinic_cities` in this case).
 
 ```{r expected-frequencies-neg-binom}
 cities <- clinic_cities+no_clinic_cities
-k <- 3.11e-07
+k <- k_for_freq
 terms <- (0:(length(freq)-1))
 negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
   (factorial(terms)*factorial(k-1))*(lambda/(lambda+k))^(terms)
