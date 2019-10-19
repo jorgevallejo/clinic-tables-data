@@ -23,27 +23,27 @@ The file with the R code have to be delivered as well.
 
 From a dataset, a statistical study must be carried out using R. The points below can be used as an outline:
 
-### 1. Look for a dataset related with Biostatistics or Bioinformatics.
+### 1- Look for a dataset related with Biostatistics or Bioinformatics.
 Must be public data.
 Explain source of data and include pertinent references. Justify why that specific dataset has been chosen.
 
-### 2. Display the data.
+### 2- Display the data.
 Using R, display and explain the type of file that has been imported, which variables are included (type, classification,...) and anything else that seems relevant.  
 Include snapshots and R commands used for import and display of the data.
 
-### 3. Probe questions.
+### 3- Probe questions.
 Make a minimum of six questions that probe the kind of information contained in the dataset.
 
-### 4. Descriptive analysis of the data.
+### 4- Descriptive analysis of the data.
 The paper must include a parametric summary of the data and several graphic representations of said data.
 
-### 5. Probability and simulation.
+### 5- Probability and simulation.
 A minimum of three questions answering probability questions and a question corresponding a short simulation model.
 
-### 6. Regression analysis.
+### 6- Regression analysis.
 A brief regression analysis from the variables in the dataset answering some question of interest.
 
-### 7. Final assessment.
+### 7- Final assessment.
 Final assessment from source data and analysis:
 Do we have conclusions?
 Would be necessary a more advanced analysis?
@@ -51,7 +51,7 @@ Would be necessary more data for obtaining another kind of information?
 
 
  
-# 1. Dataset
+# 1- Dataset
 
 I wanted to do something with data from human assisted reproduction techniques. Those are difficult to find as public datasets, I suppose that it is due to privacy issues.
 
@@ -126,7 +126,7 @@ for (year in years){
 ```
 
 
-# 2. Display data
+# 2- Display data
 
 The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from assisted reproduction treatments from 448 US clinics, collected during 2017. It is an Excel workbook containing four sheets:
 
@@ -301,7 +301,7 @@ Numeric variables are:
 *ReasonUnexplained*: Percentage of cycles for unexplained reason.  
 
 
-# 3. Probe questions
+# 3- Probe questions
 
 Basic numeric summary for the total number of cycles by clinic (without taking patient age into account):
 ```{r summary-total-cycles}
@@ -440,7 +440,7 @@ boxplot(pct_int_ret,
 As was suspected, this graph shows a marked descent in the ratio of intended oocyte retrieval resulting in live births when taking into account the age group of the patient.
 
 
-# 4. Descriptive analysis
+# 4- Descriptive analysis
 
 In this section we will accomplish a more thorough exploration of our variables, including a parametric summary of data, and graphic representations.
 
@@ -949,7 +949,7 @@ I don't know which is the reason for that difference.
 
 
 
-# 5. Probability and simulation
+# 5- Probability and simulation
 
 ## 5.1 Probability distribution of variable CurrentCityClinic.
 Let's take a variable; for example, the name of the city (CurrentCityClinic).
@@ -1014,7 +1014,7 @@ According to the [United States Census Bureau](https://factfinder.census.gov/fac
 
 Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
-```{r barplot-clinics-by-city}
+```{r barplot-clinics-by-city-2}
 
 clinics_frequency_dataframe <- rbind(
   data.frame(cities_by_clinic = as.character(c(0, 9:20)),
@@ -1320,7 +1320,7 @@ This histogram looks way smoother than the one built with real data but, all in 
 
 
 
-# 6. Regression analysis
+# 6- Regression analysis
 
 Is there a relationship between clinic size and the percentage of transfers that resulted in live births?
 
@@ -1425,7 +1425,7 @@ With a p-value so low be reject the null hypothesis of normality. We may instead
 The result was `r cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
 which means that there is not correlation between the variables.  
 The significativity of that result is:
-```{r correlation-cycles-ratioLB}
+```{r correlation-cycles-ratioLB-2}
 cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 ```
 Which doesn't let as reject the alternative hypothesis.
@@ -1435,7 +1435,7 @@ Which is good news, since it would mean that little clinics are as effective at 
 
 
 
-# 7. Final assessment 
+# 7- Final assessment 
 I am going to focus on the conclusion of the regression analysis, which is the one that I find more interesting and, at the same time, open to refinement.
 
 One of the caveats that I have found is that I am working in this analysis with data that are ratios, meaning that we are losing some information. For example, clinics that in the year have obtained 1 living birth from 2 transfers (1/2) have the same success ratio that clinics that obtained 50 living birth from 100 transfers (50/100). In both cases the ratio is 0.5, but one case should be more reliable than the other.  

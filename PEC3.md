@@ -22,12 +22,12 @@ The file with the R code have to be delivered as well.
 From a dataset, a statistical study must be carried out using R. The
 points below can be used as an outline:
 
-### 1. Look for a dataset related with Biostatistics or Bioinformatics.
+### 1- Look for a dataset related with Biostatistics or Bioinformatics.
 
 Must be public data. Explain source of data and include pertinent
 references. Justify why that specific dataset has been chosen.
 
-### 2. Display the data.
+### 2- Display the data.
 
 Using R, display and explain the type of file that has been imported,
 which variables are included (type, classification,...) and anything
@@ -35,33 +35,33 @@ else that seems relevant.
 Include snapshots and R commands used for import and display of the
 data.
 
-### 3. Probe questions.
+### 3- Probe questions.
 
 Make a minimum of six questions that probe the kind of information
 contained in the dataset.
 
-### 4. Descriptive analysis of the data.
+### 4- Descriptive analysis of the data.
 
 The paper must include a parametric summary of the data and several
 graphic representations of said data.
 
-### 5. Probability and simulation.
+### 5- Probability and simulation.
 
 A minimum of three questions answering probability questions and a
 question corresponding a short simulation model.
 
-### 6. Regression analysis.
+### 6- Regression analysis.
 
 A brief regression analysis from the variables in the dataset answering
 some question of interest.
 
-### 7. Final assessment.
+### 7- Final assessment.
 
 Final assessment from source data and analysis: Do we have conclusions?
 Would be necessary a more advanced analysis? Would be necessary more
 data for obtaining another kind of information?
 
-1. Dataset
+1- Dataset
 ==========
 
 I wanted to do something with data from human assisted reproduction
@@ -137,7 +137,7 @@ studies:
       download.file(url, destfile, method = "curl")
     }
 
-2. Display data
+2- Display data
 ===============
 
 The downloaded file *FINAL-2017-Clinic-Table-Dataset.xlsx* includes data
@@ -355,7 +355,7 @@ rest?
 We will order alphabetically each column, see what happens.
 
 Should we order the values in the columns, we see that there are columns
-with integers in which the thousands are marked with a comma (`,`).
+with integers in which the thousands are marked with a comma (",").
 
     ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
 
@@ -855,7 +855,7 @@ reason.
 reason.  
 *ReasonUnexplained*: Percentage of cycles for unexplained reason.
 
-3. Probe questions
+3- Probe questions
 ==================
 
 Basic numeric summary for the total number of cycles by clinic (without
@@ -900,16 +900,29 @@ is only the oocyte which comes from a donor).
     xlab <- "Transfers by clinic"
     ylab <- "Frequency"
 
-    hist(clinic_data$Donor_NumTrans1,
-         main = "Fresh embryo from fresh oocyte", xlab = xlab, ylab = ylab, col = "blue")
-    hist(clinic_data$Donor_NumTrans2,
-         main = "Fresh embryo from frozen oocyte", xlab = xlab, ylab = ylab, col = "tomato")
-    hist(clinic_data$Donor_NumTrans3,
-         main = "Frozen embryo", xlab = xlab, ylab = ylab, col = "yellow")
-    hist(clinic_data$Donor_NumTrans4,
-         main = "Embryo from donor", xlab = xlab, ylab = ylab, col = "green")
+    # For better comparing the histograms, the values of the x-axis, y-axis, and the bins will be the same for all four variables.
+    htd_xlim <- c(0,  max(clinic_data[,c("Donor_NumTrans1","Donor_NumTrans2","Donor_NumTrans3","Donor_NumTrans4")]+10))
+    htd_ylim <- c(0, 400)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+    hist(clinic_data$Donor_NumTrans1,
+         main = "Fresh embryo from fresh oocyte", xlab = xlab, ylab = ylab,
+         col = "blue", xlim = htd_xlim, ylim = htd_ylim,
+         breaks = seq(0, max(clinic_data$Donor_NumTrans1)+5, 10))
+    hist(clinic_data$Donor_NumTrans2,
+         main = "Fresh embryo from frozen oocyte", xlab = xlab, ylab = ylab,
+         col = "tomato", xlim = htd_xlim, ylim = htd_ylim,
+         breaks = seq(0, max(clinic_data$Donor_NumTrans2)+5, 10))
+    hist(clinic_data$Donor_NumTrans3,
+         main = "Frozen embryo", xlab = xlab, ylab = ylab,
+         col = "yellow", xlim = htd_xlim, ylim = htd_ylim,
+         breaks = seq(0, max(clinic_data$Donor_NumTrans3)+10, 10))
+    hist(clinic_data$Donor_NumTrans4,
+         main = "Embryo from donor", xlab = xlab, ylab = ylab,
+         col = "green", xlim = htd_xlim, ylim = htd_ylim,
+         breaks = seq(0, max(clinic_data$Donor_NumTrans4)+5, 10))
+
+![Bar width represents a range of 10
+transfers](PEC3_files/figure-markdown_strict/histograms-transfers-donor-1.png)
 
 One of the variables is the state of accreditation for embryology
 laboratory. For this kind of data a table may be more useful than a
@@ -940,9 +953,9 @@ state.
 
     text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
          srt = 60, adj= 1, xpd = TRUE,
-         labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
+         labels = paste(names(sort(table(clinic_data$CurrentClinicState), decreasing = TRUE))), cex=0.55)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+![](PEC3_files/figure-markdown_strict/clinics-by-state-1.png)
 
 Does the number of intended retrievals change with age? Let's use a box
 plot graphic:
@@ -971,7 +984,7 @@ plot graphic:
     # Drawing the axis (secondary ticks)
     axis(2, ticksat, labels = NA, tcl = -0.25, lwd = 0, lwd.ticks = 1)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-intended-retrievals-by-age-1.png)
 
 I suspect that the median diminishes with age group because donor eggs
 are preferred for older women instead of retrieval of their own eggs.
@@ -990,13 +1003,13 @@ relatively advanced age.
             main = bquote("Ratio of intended retrievals resulting in live births \nby hospital and age group"),
             names = c("<35", "35-37", "38-40", "41-42", ">=43"))
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-intended-retrievals-live-births-1.png)
 
 As was suspected, this graph shows a marked descent in the ratio of
 intended oocyte retrieval resulting in live births when taking into
 account the age group of the patient.
 
-4. Descriptive analysis
+4- Descriptive analysis
 =======================
 
 In this section we will accomplish a more thorough exploration of our
@@ -1596,7 +1609,7 @@ ovarian follicles.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "coral")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-egg-retrieval-1.png)
 
 I have had some problems with this image. Labels and points are more
 little than I wanted, but at least I have managed to include all three
@@ -1657,7 +1670,7 @@ There are some statistics associated to the intended egg retrievals:
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "lightgoldenrod1")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-19-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-intended-egg-retrievals-1.png)
 
 Also in this set of variables the effect of the age group seems clear in
 all of them.
@@ -1697,7 +1710,7 @@ live births.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "coral")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-20-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-transfers-1.png)
 
 Look at the median value of the percentage of transfers resulting in
 live births for the &gt;=43 years age group. It is zero. If we look up
@@ -1734,7 +1747,7 @@ the patient can not be used.
             names = c("Fresh Egg", "Frozen Egg", "Frozen Embryo", "Donated Embryo"),
             col = "coral")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-21-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-transfers-from-donor-1.png)
 
 We see than the most common source of transfer from donor is the frozen
 embryo. It makes sense, since it does not require to coordinate egg
@@ -1777,7 +1790,7 @@ been obtained by ICSI:
             names = c("Gestational Carriers", "Frozen Embryos", "ICSI", "PGT"),
             col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-22-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-GFIP-1.png)
 
 Seen the data represented, we can say that gestational carrier transfers
 are a minority in most of the clinics (median 0.02), with notable
@@ -1812,14 +1825,16 @@ transfers to gestational carriers.
 
     ## [1] "66.8%" "67.9%"
 
-Clinic: WESTERN FERTILITY INSTITUTE, REPRODUCTIVE SCIENCES MEDICAL
-CENTER City: ENCINO, SAN DIEGO State: CALIFORNIA, CALIFORNIA Pct of
-transfers to gestational carriers: 66.8%, 67.9%
+Clinics: WESTERN FERTILITY INSTITUTE, REPRODUCTIVE SCIENCES MEDICAL
+CENTER  
+Cities: ENCINO, SAN DIEGO  
+States: CALIFORNIA, CALIFORNIA  
+Pct of transfers to gestational carriers: 66.8%, 67.9%
 
 For anyone interested, a quick query in a search engine provides us with
-the websites of the clinics: [Western Fertility
-Institute](https://www.westernfertility.com/) [Reproductive Sciences
-Medical Center](https://fertile.com/)
+the websites of the clinics:  
+[Western Fertility Institute](https://www.westernfertility.com/)  
+[Reproductive Sciences Medical Center](https://fertile.com/)
 
 We can break down the ratios of transfers into age groups for
 gestational carriers, transfers of frozen embryos, embryos obtained by
@@ -1860,7 +1875,7 @@ I am assuming here that the age is that of the patient.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-24-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-ratio-transfers-by-age-1.png)
 
 In the case of the transfers to gestational carriers, the distributions
 by ages doesn't seem to change much except for &lt;35 and &gt;=43 years
@@ -1904,7 +1919,7 @@ embryo may be frozen and thawed before implantation.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-cycles-by-age-1.png)
 
 This results -in a way- have surprised me, since I was expecting more
 cycles for the higher age groups. It does not seem to be the case,
@@ -1932,7 +1947,7 @@ banking, and cycles for fertility preservation.
             names = c("Canceled", "Stopped", "Fertility preservation"),
             col = "lightgoldenrod1")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-26-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-interruted-cycles-1.png)
 
 It is curious that cycles for fertility preservation are the less common
 ones, but there is a clinic in which most of the cycles are performed
@@ -1943,9 +1958,11 @@ database:
 
     preserv_clinic <- clinic_data[clinic_data$CycleFertPresAll > 0.8,]
 
-Clinic: EXTEND FERTILITY-EXPECT FERTILITY City: NEW YORK State: NEW YORK
-Total number of cycles: 716 Pct of cycles for fertility preservation:
-86.6%
+Clinic: EXTEND FERTILITY-EXPECT FERTILITY  
+City: NEW YORK  
+State: NEW YORK  
+Total number of cycles: 716  
+Pct of cycles for fertility preservation: 86.6%
 
 For anyone interested, a quick query in a search engine provides us with
 the website of the clinic: <https://extendfertility.com/>
@@ -1966,7 +1983,7 @@ on the ratio of cancelled cycles.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-28-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-cancelled-cycles-1.png)
 
 The median doesn't really change between the age groups; the
 distribution of the data points, though, keeps expanding with the age of
@@ -1990,7 +2007,7 @@ cycles.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "lightgoldenrod1")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-29-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-stopped-cycles-1.png)
 
 This graphic is similar to that of cancelled cycles by age. There is no
 much difference in the median of the different groups, but the
@@ -2013,16 +2030,16 @@ this tool.
             names = c("<35", "35-37", "38-40", "41-42", ">=43"),
             col = "coral")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-30-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-fertility-preservation-1.png)
 
 This case shows an interesting trend in which the medians are slightly
 higher in the groups ranging 35 to 42 years old patients; the
 distribution of the data is quite narrow around the median in all
 groups; and the distribution in the group of patients older than 43 year
-has almost collapsed on the value of the median (0.0). Nevertheless,
-there is an impressive quantity of high outliers in every group (an
-outlier here taken as any data point more than 1.5 times the length of
-the box).  
+has almost collapsed on the value of the median (0.0).  
+Nevertheless, there is an impressive quantity of high outliers in every
+group (an outlier here taken as any data point more than 1.5 times the
+length of the box).  
 That trend in these distributions is more or less expected since
 patients of more age would prefer to achieve pregnancy as soon as
 possible instead of saving eggs for the future. While younger patients
@@ -2066,7 +2083,7 @@ preservation of fertility (banking) or unknown.
          labels = cycle_labels,
          cex=0.8)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-31-1.png)
+![](PEC3_files/figure-markdown_strict/boxplot-cause-of-cycles-1.png)
 
 The most frequent causes behind ART cycles are male factor (which
 encompasses all the causes dependent on the males), diminished ovarian
@@ -2114,10 +2131,9 @@ cycles committed to gestational carriers is very low:
 </tbody>
 </table>
 
-I don't know which is the reason for that difference. XXXX Look if the
-knitted document shows that big blank space in the table XXXX
+I don't know which is the reason for that difference.
 
-5. Probability and simulation
+5- Probability and simulation
 =============================
 
 5.1 Probability distribution of variable CurrentCityClinic.
@@ -3315,16 +3331,19 @@ If we represent it in a bar plot:
             # This adjusts the maxim value in the y axis:
             ylim = c(0,4+max(table(clinic_data$CurrentClinicCity))),
             xaxt = "n", # Avoids plotting the names in the x axis.
-            space = 1)
+            space = 1,
+            main = "Number of clinics by city",
+            xlab = "Cities (names not represented due to lack of space)",
+            ylab = "Clinics")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-34-1.png)
+![](PEC3_files/figure-markdown_strict/barplot-clinics-by-city-1.png)
 
     #text(seq(1.5,end_point,by=2), par("usr")[3]-0.25, 
     #     srt = 60, adj= 1, xpd = TRUE,
     #     labels = paste(unique(clinic_data$CurrentClinicState)), cex=0.55)
 
-We see that there are few cities with several clinics, and many with
-only one or two.
+We see that there are few cities with several clinics, and many cities
+with only one or two clinics.
 
 We can get a contingency table:
 
@@ -3337,17 +3356,17 @@ We can get a contingency table:
     ## 207  53  11   9   1   3   2   1   1
 
 Which informs us that we got 207 cities with one fertility clinic in
-them, and one city with 1 clinics in it.
+them, and one city with 21 clinics in it.
 
-    clinic_cities <- length(unique(cities_by_clinic))
+    clinic_cities <- length(cities_by_clinic)
     no_clinic_cities <- 19495 - clinic_cities
 
-In total, we have 9 cities with at least a fertility clinic.
+In total, we have 288 cities with at least a fertility clinic.
 
 According to the [United States Census
 Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk),
 there are 19,495 cities (defined as incorporated places, with some
-exceptions) in the country. Which means that there are 1.948610^{4}
+exceptions) in the country. Which means that there are 1.920710^{4}
 cities with no fertility clinic.
 
 Let's add this datum to the table and represent it in a bar plot. We
@@ -3370,7 +3389,7 @@ will add counts with zero frequency as well, it will be useful later.
             cex.names = 0.7
             )
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-37-1.png)
+![](PEC3_files/figure-markdown_strict/barplot-clinics-by-city-2-1.png)
 
 If we represent it in a logarithmic scale:
 
@@ -3382,7 +3401,7 @@ If we represent it in a logarithmic scale:
             cex.names = 0.7
             )
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-38-1.png)
+![](PEC3_files/figure-markdown_strict/barplot-clinics-by-city-logarithmic-1.png)
 
 We can see that the number of cities with not even one fertility clinic
 is many more (by two orders of magnitude) than those that have only one
@@ -3418,7 +3437,7 @@ per sample.
 
     ## simulated_counts
     ##     0     1     2 
-    ## 19360   408     6
+    ## 19064   429     2
 
 The data shown in the table doesn't look like a good match for our data.
 
@@ -3428,7 +3447,7 @@ In our case:
 
     var(vector_counts)/mean(vector_counts)
 
-    ## [1] 3.098036
+    ## [1] 3.097714
 
 The variable is three times the mean. It would be 1 if the data were
 Poisson distributed.  
@@ -3437,7 +3456,7 @@ Let's make a rough estimate of the clumping parameter *k*:
     # The formulae are adapted from _The R Book_, section 7.4.7
     mean(vector_counts)^2/(var(vector_counts)-mean(vector_counts))
 
-    ## [1] 0.01079868
+    ## [1] 0.0109549
 
 A function that computes the maximum likelihood estimate of **k** from a
 vector of frequencies of counts:
@@ -3461,7 +3480,7 @@ vector of frequencies of counts:
         rhs[i] <- sum(a/(k + j))
       }
       k <- seq(k1/1.2, 2*k1, 0.001)
-      plot(k, abs(lhs-rhs), xlab="k", ylab = "Difference", type = "l", col = "red")
+      #plot(k, abs(lhs-rhs), xlab="k", ylab = "Difference", type = "l", col = "red")
       d <- min(abs(lhs-rhs))
       sdd <- which(abs(lhs-rhs)==d)
       k[sdd]
@@ -3469,21 +3488,21 @@ vector of frequencies of counts:
 
 Trying it with the clinics count data:
 
-    kfit(freq)
+    k_for_freq <- kfit(freq)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-43-1.png)
+    k_for_freq
 
-    ## [1] 3.061939e-07
+    ## [1] 3.150208e-07
 
-So, the maximum likelihood of *k* is this case is 3.11e-07.
+So, the maximum likelihood of *k* is this case is 3.150207810^{-7}.
 
-How would a negative binomial distribution with a mean of 0.022656 and
+How would a negative binomial distribution with a mean of 0.0229803 and
 that *k* value describe our count data? The expected frequencies are
 obtained by multiplying the probability density by the total sample size
 (1.949510^{4} in this case).
 
     cities <- clinic_cities+no_clinic_cities
-    k <- 3.11e-07
+    k <- k_for_freq
     terms <- (0:(length(freq)-1))
     negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
       (factorial(terms)*factorial(k-1))*(lambda/(lambda+k))^(terms)
@@ -3519,7 +3538,7 @@ alternating the bars for observed and expected (*from* The R Book,
 
     barplot_legend(both)
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-45-1.png)
+![](PEC3_files/figure-markdown_strict/barplot-observed-expected-1.png)
 
 To the naked eye, the fit between both distributions is close. But we
 might want to measure the lack of fit between observed and expected
@@ -3546,7 +3565,7 @@ this variable?
          main = "Transfers of fresh embryos from a frozen egg from donor",
          xlab = "Transfers", ylab = "Frequency", col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-46-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-donornumtrans2-1.png)
 
 This once again looks like a Poisson distribution or a negative
 binomial, where events (a particular kind of transfer in this case) have
@@ -3566,7 +3585,7 @@ between the sum of all the variables involving transfers from donor
     hist(ratio_donor_trans2, main = "Transfers of fresh embryos from a frozen egg from donor",
          xlab = "Ratio", ylab = "Frequency of ratios", col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-47-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-ratios-donornumtrans2-1.png)
 
 Keep in mind that, this time, we are excluding those clinics with no
 transfers from donor whatsoever (dividing by zero produces NaN results,
@@ -3595,7 +3614,7 @@ distribution*.
          xlab = "Ratio", ylab = "Density", col = "aliceblue", freq = FALSE)
     lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-48-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-ratiodonortrans2-beta-distribution-1.png)
 
 I does not look bad. Although I wonder if we could use the negative
 binomial (or the gamma distribution).  
@@ -3623,7 +3642,7 @@ variance). Maybe the answer is in the gamma distribution.
 
     lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape, rate))
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-50-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-ratiodonortrans2-gamma-dist-1.png)
 
 Worse, I would definitively stick to the beta distribution.
 
@@ -3646,7 +3665,7 @@ Let's take a last variable for a probability question; ND\_IntentRetLB2
          main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
          xlab = "Ratio", ylab = "Frequency", col = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-51-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-ndintretlb2-1.png)
 
 This looks like a normal distribution skewed to the right. Maybe a
 gamma, then.
@@ -3670,7 +3689,7 @@ gamma, then.
     # Draw a legend
     legend(x = 0.8, y= 3, legend=c("Normal", "Gamma"), fill=(c("blue","red")))
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-52-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-ndintretlb2-normal-gamma-1.png)
 
 Given the fit, I would say that the variable ND\_IntentRetLB2 follows a
 **normal distribution** with mean 0.362276 and variance 0.0197434.
@@ -3703,7 +3722,7 @@ histogram like that from the real data?
          #,freq = FALSE
     )
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-53-1.png)
+![](PEC3_files/figure-markdown_strict/histogram-simulated-ndintretlb2-1.png)
 
     # Draw the normal distribution
     #lines(seq(0,1,0.01), dnorm(seq(0,1,0.01), mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE), sqrt(var(clinic_data$ND_IntentRetLB2, na.rm = TRUE))), col = "blue")
@@ -3716,7 +3735,7 @@ information about the real number of procedures performed at each
 clinic. That could have an effect on the distribution that best modeled
 the data.
 
-6. Regression analysis
+6- Regression analysis
 ======================
 
 Is there a relationship between clinic size and the percentage of
@@ -3758,7 +3777,7 @@ ratio of living births by transfer:
 
     plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-55-1.png)
+![](PEC3_files/figure-markdown_strict/plot-cycles-ratio-living-births-transfer-1.png)
 
 It is difficult to make a preliminary assessment from that graph, only
 that most of the info is given below 2000 cycles. Data points beyond
@@ -3813,7 +3832,7 @@ Let's add it to the graph:
 
     abline(RegModel, col = "red")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-58-1.png)
+![](PEC3_files/figure-markdown_strict/plot-cycles-ratioLB-least-squares-line-1.png)
 
 The correlation coefficient is only 0.008369, which I interpret as a
 very poor adjust, rending meaningless the values of the model. It may be
@@ -3839,7 +3858,7 @@ Let's check those assumptions:
     hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
          col = "lightgoldenrod1")
 
-![](PEC3_files/figure-markdown_strict/unnamed-chunk-59-1.png)
+![](PEC3_files/figure-markdown_strict/qqplots-for-cycles-and-ratioLB-1.png)
 
 It is clear the the total number of cycles doesn't follow a normal
 distribution. The ratios of living births per transfer look more like
@@ -3886,7 +3905,7 @@ effective at achieving living births after transfer as big clinics are.
 That is probably because the techniques used are mature, well known and
 widely taught, and the clinics maintain high standards of operation.
 
-7. Final assessment
+7- Final assessment
 ===================
 
 I am going to focus on the conclusion of the regression analysis, which
