@@ -1068,6 +1068,7 @@ lambda <- mean(vector_counts)
 
 # Generate a random vector from the poisson distribution with the same length
 # that our case and lambda equal to our mean.
+set.seed(92)
 simulated_counts <- rpois(length(vector_counts), lambda)
 
 table(simulated_counts)
@@ -1416,7 +1417,7 @@ hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
      col = "lightgoldenrod1")
 ```
 
-It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer looks more like it, but if we test it with Shapiro-Wilk:
+It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer look more like it, but if we test it with Shapiro-Wilk:
 
 ```{r shapiro-ratioLB}
 shapiro.test(TotRatioLB)

@@ -1,5 +1,8 @@
+2017 Assisted Reproduction Clinics Dataset Analysis: Practice of data analysis with R
+=====================================================================================
+
 Foreword
-========
+--------
 
 This work is inspired in an exercise from the course 'Software para el
 análisis de datos' in UOC's degree 'Bioinformática y Bioestadística'.
@@ -3431,13 +3434,14 @@ per sample.
 
     # Generate a random vector from the poisson distribution with the same length
     # that our case and lambda equal to our mean.
+    set.seed(92)
     simulated_counts <- rpois(length(vector_counts), lambda)
 
     table(simulated_counts)
 
     ## simulated_counts
     ##     0     1     2 
-    ## 19064   429     2
+    ## 19053   437     5
 
 The data shown in the table doesn't look like a good match for our data.
 
