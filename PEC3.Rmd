@@ -907,7 +907,7 @@ In this section we will examine the data that describe the reason behind the ART
 boxplot(clinic_data[c(142:154)],
         #xlab = "Groups",
         ylab = "Ratio",
-        main = bquote("Ratio of Cycles for Different Reasons by Hospital and Age Group"),
+        main = bquote("Ratio of Cycles for Different Reasons by Hospital and Cause"),
         names = c("Male factor", "Endometriosis", "Tubal factor", "Ovulatory dysfunction",
                   "Uterine factor", "PGT", "Gestational carrier", "DOR", "Banking",
                   "Recurrent pregnancy loss", "Other infertility", "Other non-infertility",
