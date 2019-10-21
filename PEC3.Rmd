@@ -3,14 +3,15 @@ title: "2017 Clinic Dataset Analysis"
 subtitle: "Assisted reproduction clinics data from the CDC"
 author: "Jorge Vallejo Ortega"
 output:
-  md_document: default
-  #pdf_document: default
+  #md_document: default
+  pdf_document: default
 # Next code is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding,
   output_format = "all") })
 ---
-# Foreword
+# 2017 Assisted Reproduction Clinics Dataset Analysis: Practice of data analysis with R
+## Foreword
 This work is inspired in an exercise from the course 'Software para el análisis de datos' in UOC's degree 'Bioinformática y Bioestadística'.
 
 I am using this to learn the use of the language R, and the tools RStudio, Git and GitHub. This is not a professional level study of assisted reproduction data from clinics in the USA. If you want to have access to such studies, or even the raw data, you can get them from CDC's webpage [ART's Success Rate Data](https://www.cdc.gov/art/artdata/index.html).
@@ -1398,7 +1399,7 @@ hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
      col = "lightgoldenrod1")
 ```
 
-It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer look more like it, but if we test it with Shapiro-Wilk:
+It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer looks more like it, but if we test it with Shapiro-Wilk:
 
 ```{r}
 shapiro.test(TotRatioLB)
