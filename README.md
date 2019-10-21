@@ -1,3 +1,7 @@
+# README to the 2017 Assisted Reproduction Clinics Dataset Analysis. What is this?
+
+![Sample box plot from the report](PEC3_files/figure-markdown_strict/boxplot-cause-of-cycles-1.png)
+
 This work is based in an exercise from the course 'Software para el análisis de datos' in UOC's degree 'Bioinformática y Bioestadística'.
 
 I am using this to learn the use of the language R, and the tools RStudio, Git and GitHub. This is not a professional level study of assisted reproduction data from clinics in the USA. If you want to have access to such studies, or even the raw data, you can get them from CDC's webpage [ART's Success Rate Data](https://www.cdc.gov/art/artdata/index.html).
