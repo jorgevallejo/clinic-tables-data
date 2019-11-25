@@ -1281,7 +1281,7 @@ rate5.3 <- mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)
 shape5.3 <- rate*mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)
 
 # Draw the density function
-lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape, rate), col = "red")
+lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape5.3, rate5.3), col = "red")
 
 # Draw a legend
 legend(x = 0.8, y= 3, legend=c("Normal", "Gamma"), fill=(c("blue","red")))
