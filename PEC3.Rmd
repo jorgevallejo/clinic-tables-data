@@ -139,7 +139,7 @@ The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from as
 I am interested in the data broke down by clinic. Therefore, I will import the data from sheets **Clinic Table Dictionary** and **Clinic Table Data Records**.
 
 ```{r import-data-from-excel, warning=FALSE}
-require("xlsx")
+library("xlsx")
 clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
                                endRow = 165, encoding = "UTF-8")
 # Everything is NA after row 166; row 166 is a comment.
