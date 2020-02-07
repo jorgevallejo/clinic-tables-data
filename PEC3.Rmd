@@ -732,10 +732,10 @@ carrier_clinic$CurrentClinicState
 paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = "")
 ```
 
-Clinics: `r noquote(carrier_clinic$CurrentClinicName1)`  
-Cities: `r noquote(carrier_clinic$CurrentClinicCity)`  
-States: `r noquote(carrier_clinic$CurrentClinicState)`  
-Pct of transfers to gestational carriers: `r noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
+Clinics: `r #noquote(carrier_clinic$CurrentClinicName1)`  
+Cities: `r #noquote(carrier_clinic$CurrentClinicCity)`  
+States: `r #noquote(carrier_clinic$CurrentClinicState)`  
+Pct of transfers to gestational carriers: `r #noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
 
 For anyone interested, a quick query in a search engine provides us with the websites of the clinics:  
 [Western Fertility Institute](https://www.westernfertility.com/)  
@@ -831,11 +831,11 @@ preserv_clinic <- clinic_data[clinic_data$CycleFertPresAll > 0.8,]
 
 ```
 
-Clinic: `r noquote(preserv_clinic$CurrentClinicName1)`  
-City: `r noquote(preserv_clinic$CurrentClinicCity)`  
-State: `r noquote(preserv_clinic$CurrentClinicState)`  
-Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`  
-Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
+Clinic: `r #noquote(preserv_clinic$CurrentClinicName1)`  
+City: `r #noquote(preserv_clinic$CurrentClinicCity)`  
+State: `r #noquote(preserv_clinic$CurrentClinicState)`  
+Total number of cycles: `r #noquote(preserv_clinic$TotNumCyclesAll)`  
+Pct of cycles for fertility preservation: `r #noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
 
 For anyone interested, a quick query in a search engine provides us with the website of the clinic:
 <https://extendfertility.com/>
@@ -1002,16 +1002,16 @@ clinics_frequency <- table(cities_by_clinic)
 clinics_frequency
 ```
 
-Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
+Which informs us that we got `r #clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r #noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
 
 ```{r cities-with-and-without-clinics, eval = FALSE}
 clinic_cities <- length(cities_by_clinic)
 no_clinic_cities <- 19495 - clinic_cities
 ```
 
-In total, we have `r clinic_cities` cities with at least a fertility clinic.
+In total, we have `r #clinic_cities` cities with at least a fertility clinic.
 
-According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places, with some exceptions) in the country. Which means that there are `r no_clinic_cities` cities with no fertility clinic.
+According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places, with some exceptions) in the country. Which means that there are `r #no_clinic_cities` cities with no fertility clinic.
 
 Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
@@ -1123,9 +1123,9 @@ k_for_freq <- kfit(freq)
 
 k_for_freq
 ```
-So, the maximum likelihood of _k_ is this case is `r k_for_freq`.
+So, the maximum likelihood of _k_ is this case is `r #k_for_freq`.
 
-How would a negative binomial distribution with a mean of `r lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r clinic_cities+no_clinic_cities` in this case).
+How would a negative binomial distribution with a mean of `r #lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r #clinic_cities+no_clinic_cities` in this case).
 
 ```{r expected-frequencies-neg-binom, eval = FALSE}
 cities <- clinic_cities+no_clinic_cities
@@ -1287,7 +1287,7 @@ lines(seq(0, 1, 0.01), dgamma(seq(0, 1, 0.01), shape5.3, rate5.3), col = "red")
 legend(x = 0.8, y= 3, legend=c("Normal", "Gamma"), fill=(c("blue","red")))
 ```
 
-Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal distribution** with mean `r mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)` and variance `r var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)`.
+Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal distribution** with mean `r #mean(clinic_data$ND_IntentRetLB2, na.rm = TRUE)` and variance `r #var(clinic_data$ND_IntentRetLB2, na.rm = TRUE)`.
 
 
 ## 5.4 A brief simulation model
@@ -1424,7 +1424,7 @@ shapiro.test(TotRatioLB)
 ```
 
 With a p-value so low be reject the null hypothesis of normality. We may instead want to check correlation with a test that doesn't assume normality, like Pearson correlation. Which... we already did previously when calculated correlation with `cor()` since the default mode is "pearson".  
-The result was `r cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
+The result was `r #cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
 which means that there is not correlation between the variables.  
 The significativity of that result is:
 ```{r correlation-cycles-ratioLB-2, eval = FALSE}
