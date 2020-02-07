@@ -4,7 +4,7 @@ subtitle: "Assisted reproduction clinics data from the CDC"
 author: "Jorge Vallejo Ortega"
 output:
   md_document: default
-  #pdf_document: default
+  pdf_document: default
 # Next code is from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding,
