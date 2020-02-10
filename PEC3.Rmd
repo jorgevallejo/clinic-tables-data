@@ -65,7 +65,7 @@ https://www.cdc.gov/art/reports/archive.html
 
 ## Datasets downloading
 
-```{r download-2017, eval = FALSE, eval = FALSE}
+```{r download-2017, eval = FALSE}
 
 # The code option eval = FALSE prevents this chunk to run. In this way, data WON'T
 # be downloaded each time the .Rmd file is knitted to produce a report.
@@ -138,7 +138,7 @@ The downloaded file _FINAL-2017-Clinic-Table-Dataset.xlsx_ includes data from as
 
 I am interested in the data broke down by clinic. Therefore, I will import the data from sheets **Clinic Table Dictionary** and **Clinic Table Data Records**.
 
-```{r import-data-from-excel, warning=FALSE, eval = FALSE}
+```{r import-data-from-excel, warning=FALSE}
 library("xlsx")
 clinic_dictionary <- read.xlsx("../datos/FINAL-2017-Clinic-Table-Dataset.xlsx", 4,
                                endRow = 165, encoding = "UTF-8")
