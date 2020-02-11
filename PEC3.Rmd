@@ -158,7 +158,7 @@ View(clinic_data)
 
 Let's see how each variable has been codified:
 
-```{r list-codified-variables, eval = FALSE}
+```{r list-codified-variables}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
@@ -172,7 +172,7 @@ We will order alphabetically each column, see what happens.
 
 Should we order the values in the columns, we see that there are columns with integers in which the thousands are marked with a comma (",").
 
-```{r order-values, eval = FALSE}
+```{r order-values}
 ordenadas <- sapply(clinic_data, function(x) sort(x, na.last = TRUE))
 
 View(ordenadas)
@@ -184,7 +184,7 @@ Next, we will correct those variables that should be `integer` o `numeric`.
 Code adapted from a question in Stack Overflow:
 [How to read data when some numbers contain commas as thousand separator?](https://stackoverflow.com/questions/1523126/how-to-read-data-when-some-numbers-contain-commas-as-thousand-separator)
 
-```{r delete-commas, eval = FALSE}
+```{r delete-commas}
 # Vectors that refer the columns that should be integers
 # and the columns that should be ratios.
 
@@ -211,7 +211,7 @@ I will remove the symbol with `gsub`. Besides, I will divide the result by 100, 
 
 3) Data as fractions. Even a bit more complex. I will use regular expressions to isolate numerator and denominator, and will return the result of the division as a ratio.
 
-```{r process-fractions, warning=FALSE, eval = FALSE}
+```{r process-fractions, warning=FALSE}
 # This function processes ratios expressed as fractions.
 divide <- function(x){
   numerator <- as.numeric(gsub(" .*$", "", x))
@@ -248,7 +248,7 @@ The use of chunk option `warning=FALSE` prevents the displaying of multiple `NAs
 
 I might have allowed myself to get carried along in passion choosing a file too big. The table contains 165 variables. It is not a ridiculous number, but may be not easy enough to handle for the scope of this study.
 
-```{r list-of-variables, eval = FALSE}
+```{r list-of-variables}
 str(clinic_data, list.len = length(clinic_data))
 ```
 
@@ -305,7 +305,7 @@ Numeric variables are:
 # 3- Probe questions
 
 Basic numeric summary for the total number of cycles by clinic (without taking patient age into account):
-```{r summary-total-cycles, eval = FALSE}
+```{r summary-total-cycles}
 # Basic numeric summary
 statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
 variables <- c("TotNumCyclesAll")
@@ -334,7 +334,7 @@ testdf
 
 Frequency histogram displaying number of transfers from donor. Four graphs, each one for each of the starting states: fresh oocyte, frozen oocyte, frozen embryo, and donated embryo (in the other three cases it is only the oocyte which comes from a donor).
 
-```{r histograms-transfers-donor, fig.cap="Bar width represents a range of 10 transfers", eval = FALSE}
+```{r histograms-transfers-donor, fig.cap="Bar width represents a range of 10 transfers"}
 par(mfrow = c(2, 2)) # generate a 2x2 array for printing the graphs.
 
 xlab <- "Transfers by clinic"
@@ -366,14 +366,14 @@ hist(clinic_data$Donor_NumTrans4,
 
 One of the variables is the state of accreditation for embryology laboratory. For this kind of data a table may be more useful than a graph:
 
-```{r accreditation-table, eval = FALSE}
+```{r accreditation-table}
 table(clinic_data$LabAccred)
 ```
 
 
 Nevertheless, for other qualitative data we could find more interesting to display them in a graph. For example, how many clinics offer ART, by state.
 
-```{r clinics-by-state, eval = FALSE}
+```{r clinics-by-state}
 # Most of this code I adapted it from:
 # https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
 
@@ -395,7 +395,7 @@ text(seq(1.5,end_point,by=2), par("usr")[3]-0.25,
 
 Does the number of intended retrievals change with age? Let's use a box plot graphic:
 
-```{r boxplot-intended-retrievals-by-age, eval = FALSE}
+```{r boxplot-intended-retrievals-by-age}
 # To avoid problems with the logarithm of 0, let's change the value 0 by value 1.
 intended_retrievals <- clinic_data[,7:11]
 intended_retrievals[intended_retrievals == 0] <- 1
@@ -426,7 +426,7 @@ I suspect that the median diminishes with age group because donor eggs are prefe
 
 Equally, we can wonder about the percentage of intended oocyte retrievals that results in live births. That would give a little guiding about if it is worth the effort of retrieve oocytes from patients of a relatively advanced age.
 
-```{r boxplot-intended-retrievals-live-births, eval = FALSE}
+```{r boxplot-intended-retrievals-live-births}
 # Ratio of intended retrievals resulting in live births, by age
 pct_int_ret <- clinic_data[,12:16]
 
@@ -449,7 +449,7 @@ In this section we will accomplish a more thorough exploration of our variables,
 
 Summary of services offered by the clinics.
 
-```{r summary-services, eval = FALSE}
+```{r summary-services}
 # Columns including the data for the services: 155-160 and 162.
 services <- clinic_data[c(155:160, 162)]
 
@@ -472,7 +472,7 @@ lapply(services, table)
 
 Descriptive summary of numeric variables:
 
-```{r summary-numeric-variables, eval = FALSE}
+```{r summary-numeric-variables}
 
 variables <- colnames(clinic_data[c(7:154, 163)])
 statistics <- c("average", "min.", "max.", "stdr.deviation", "C.V.", "25%", "50%", "75%")
@@ -505,7 +505,7 @@ for (var in variables) {
 
 **Egg retrieval** is a procedure to collect the eggs contained in the ovarian follicles.
 
-```{r log-boxplot-function, eval = FALSE}
+```{r log-boxplot-function}
 # Since I think I am going to need this code several times, I will wrap it into a function.
 
 log_boxplot <- function(x, ...){
@@ -531,7 +531,7 @@ log_boxplot <- function(x, ...){
 }
 ```
 
-```{r boxplot-egg-retrieval, fig.height = 15, fig.width = 8, eval = FALSE}
+```{r boxplot-egg-retrieval, fig.height = 15, fig.width = 8}
 # Let's actually draw the graphs.
 
 par(mfcol = c(3, 1))
@@ -567,7 +567,7 @@ I have had some problems with this image. Labels and points are more little than
 
 There are some statistics associated to the intended egg retrievals:
 
-```{r boxplot-intended-egg-retrievals, fig.height = 30, fig.width = 8, eval = FALSE}
+```{r boxplot-intended-egg-retrievals, fig.height = 30, fig.width = 8}
 
 par(mfcol = c(6, 1))
 
@@ -628,7 +628,7 @@ Also in this set of variables the effect of the age group seems clear in all of 
 
 Like above, we will represent number of transfers, percentage of transfers resulting in live births, and those resulting in singleton live births.
 
-```{r boxplot-transfers, fig.height = 15, fig.width = 8, eval = FALSE}
+```{r boxplot-transfers, fig.height = 15, fig.width = 8}
 
 par(mfcol = c(3, 1))
 
@@ -663,7 +663,7 @@ All in all, even the median ratio for the youngest age group is not that great, 
 
 **Transfers from a donor** is a possibility when the own oocytes from the patient can not be used.
 
-```{r boxplot-transfers-from-donor, fig.height = 15, fig.width = 8, eval = FALSE}
+```{r boxplot-transfers-from-donor, fig.height = 15, fig.width = 8}
 
 par(mfcol = c(3, 1))
 
@@ -708,7 +708,7 @@ A *gestational carrier* is a woman who gestates an embryo originated from the eg
 
 In the next graph we will represent the data of the ratio of transfers that use a gestational carriers, those that use frozen embryos, those in which PGT has been performed, and those in which at least one embryo has been obtained by ICSI:
 
-```{r boxplot-GFIP, fig.width = 8, eval = FALSE}
+```{r boxplot-GFIP, fig.width = 8}
 
 # Ratio of transfers (gestational carriers, frozen embryos, ICSI)
 boxplot(clinic_data[c(123, 129, 135, 141)],
@@ -723,7 +723,7 @@ Seen the data represented, we can say that gestational carrier transfers are a m
 
 I was wondering about those two clinics with a ratio higher than 0.6 of transfers to gestational carriers.
 
-```{r clinics-high-gestational, eval = FALSE}
+```{r clinics-high-gestational}
 carrier_clinic <- clinic_data[clinic_data$TransCarrierAll > 0.6,]
 
 carrier_clinic$CurrentClinicName1
@@ -732,10 +732,10 @@ carrier_clinic$CurrentClinicState
 paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = "")
 ```
 
-Clinics: `r #noquote(carrier_clinic$CurrentClinicName1)`  
-Cities: `r #noquote(carrier_clinic$CurrentClinicCity)`  
-States: `r #noquote(carrier_clinic$CurrentClinicState)`  
-Pct of transfers to gestational carriers: `r #noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
+Clinics: `r noquote(carrier_clinic$CurrentClinicName1)`  
+Cities: `r noquote(carrier_clinic$CurrentClinicCity)`  
+States: `r noquote(carrier_clinic$CurrentClinicState)`  
+Pct of transfers to gestational carriers: `r noquote(paste((carrier_clinic$TransCarrierAll) * 100,"%", sep = ""))`
 
 For anyone interested, a quick query in a search engine provides us with the websites of the clinics:  
 [Western Fertility Institute](https://www.westernfertility.com/)  
@@ -745,7 +745,7 @@ For anyone interested, a quick query in a search engine provides us with the web
 We can break down the ratios of transfers into age groups for gestational carriers, transfers of frozen embryos, embryos obtained by ICSI, and embryos subjected to PGT.  
 I am assuming here that the age is that of the patient.
 
-```{r boxplot-ratio-transfers-by-age, fig.height = 20, fig.width = 8, eval = FALSE}
+```{r boxplot-ratio-transfers-by-age, fig.height = 20, fig.width = 8}
 
 par(mfcol = c(4, 1))
 
@@ -793,7 +793,7 @@ When observing the ratio of transfers in which at least one of the embryos have 
 ART cycles start when a woman begins taking fertility drugs or having her ovaries monitored for follicle production. If eggs are produced, the cycle progresses to egg retrieval. The eggs are combined with sperm to create embryos and at least one embryo is selected for transfer. If implantation of the embryo occurs, the cycle may progress to clinical pregnancy and sometimes live birth.  
 Keep in mind that the woman may not necessarily be the patient, but a donor. The egg may be frozen and thawed before fertilization, or the embryo may be frozen and thawed before implantation.
 
-```{r boxplot-cycles-by-age, fig.width = 8, eval = FALSE}
+```{r boxplot-cycles-by-age, fig.width = 8}
 
 # Total number of cycles by age group
 x <- clinic_data[,94:98]
@@ -811,7 +811,7 @@ Not all cycles end successfully, and not all cycles are started to achieve pregn
 
 In the dataset we have three of such cases: Cycles canceled prior to retrieval or thaw, cycles stopped between retrieval and transfer or banking, and cycles for fertility preservation.
 
-```{r boxplot-interruted-cycles, fig.width = 8, eval = FALSE}
+```{r boxplot-interruted-cycles, fig.width = 8}
 
 # Fate of cycles
 boxplot(clinic_data[c(105, 111, 117)],
@@ -826,16 +826,16 @@ It is curious that cycles for fertility preservation are the less common ones, b
 
 We can easily extract the name and other data of the clinic from the database:
 
-```{r fertility-preservation-clinic, eval = FALSE}
+```{r fertility-preservation-clinic}
 preserv_clinic <- clinic_data[clinic_data$CycleFertPresAll > 0.8,]
 
 ```
 
-Clinic: `r #noquote(preserv_clinic$CurrentClinicName1)`  
-City: `r #noquote(preserv_clinic$CurrentClinicCity)`  
-State: `r #noquote(preserv_clinic$CurrentClinicState)`  
-Total number of cycles: `r #noquote(preserv_clinic$TotNumCyclesAll)`  
-Pct of cycles for fertility preservation: `r #noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
+Clinic: `r noquote(preserv_clinic$CurrentClinicName1)`  
+City: `r noquote(preserv_clinic$CurrentClinicCity)`  
+State: `r noquote(preserv_clinic$CurrentClinicState)`  
+Total number of cycles: `r noquote(preserv_clinic$TotNumCyclesAll)`  
+Pct of cycles for fertility preservation: `r noquote(paste((preserv_clinic$CycleFertPresAll) * 100,"%", sep = ""))`
 
 For anyone interested, a quick query in a search engine provides us with the website of the clinic:
 <https://extendfertility.com/>
@@ -845,7 +845,7 @@ For anyone interested, a quick query in a search engine provides us with the web
 
 Cancelled cycles are cycles that have been started but where cancelled prior to the retrieval of fresh eggs or the thawing of cryopreserved eggs. Here, we want to see if the age of the patient may have any effect on the ratio of cancelled cycles.
 
-```{r boxplot-cancelled-cycles, fig.width = 8, eval = FALSE}
+```{r boxplot-cancelled-cycles, fig.width = 8}
 
 # Cancelled cycles by age group
 boxplot(clinic_data[c(100:104)],
@@ -864,7 +864,7 @@ Also, keep in mind that the ratio is not of the total of cycles, but the cycles 
 
 Stopped cycles are those cycles that started but where cancelled between retrieval and transfer (or banking). We will visualize these data to see if the age of the patient may have an effect on the ratio of stopped cycles.
 
-```{r boxplot-stopped-cycles, fig.width = 8, eval = FALSE}
+```{r boxplot-stopped-cycles, fig.width = 8}
 
 # Stopped cycles by age group
 boxplot(clinic_data[c(106:110)],
@@ -882,7 +882,7 @@ This graphic is similar to that of cancelled cycles by age. There is no much dif
 
 Fertility preservation cycles are those started with the intent to freeze all resulting eggs or embryos for 12 months or longer in order to preserve future fertility. Let's see which age group makes more use of this tool.
 
-```{r boxplot-fertility-preservation, fig.width = 8, eval = FALSE}
+```{r boxplot-fertility-preservation, fig.width = 8}
 
 # Stopped cycles by age group
 boxplot(clinic_data[c(112:116)],
@@ -901,7 +901,7 @@ That trend in these distributions is more or less expected since patients of mor
 
 In this section we will examine the data that describe the reason behind the ART cycles performed by the clinics. Most of them are directly related to infertility (male factor, endometriosis, tubal factor, and so on), while some are aimed to prevent genetic disorders (PGT), preservation of fertility (banking) or unknown.
 
-```{r boxplot-cause-of-cycles, fig.width = 8, eval = FALSE}
+```{r boxplot-cause-of-cycles, fig.width = 8}
 
 # Cause of the cycles
 boxplot(clinic_data[c(142:154)],
@@ -934,7 +934,7 @@ The least frequent causes are endometriosis, uterine factor, PGT, recurrent preg
 
 What stands out for me is that, even for clinics in which the ratio of transfers with the objective of using gestational carriers, the ratio of cycles committed to gestational carriers is very low:
 
-```{r table-ratio-transfers-to-ratio-gestational, eval = FALSE}
+```{r table-ratio-transfers-to-ratio-gestational}
 cycle_carrier_table <- clinic_data[clinic_data$CurrentClinicName1 == "WESTERN FERTILITY INSTITUTE" | clinic_data$CurrentClinicName1 == "REPRODUCTIVE SCIENCES MEDICAL CENTER", c("CurrentClinicName1", "TransCarrierAll", "ReasonCarrier")]
 
 knitr::kable(cycle_carrier_table,
