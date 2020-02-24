@@ -956,7 +956,7 @@ I don't know which is the reason for that difference.
 Let's take a variable; for example, the name of the city (CurrentCityClinic).
 How many clinics are in each city that has at least one clinic?
 
-```{r table-clinics-by-city, eval = FALSE}
+```{r table-clinics-by-city}
 # The table below fuses variables for city and state, for distinguising
 # account those cities with the same name in different states.
 cities_by_clinic <- sort(table(
@@ -971,7 +971,7 @@ knitr::kable(cities_by_clinic,
 
 If we represent it in a bar plot:
 
-```{r barplot-clinics-by-city, eval = FALSE}
+```{r barplot-clinics-by-city}
 # Most of this code I adapted it from:
 # https://stackoverflow.com/questions/10286473/rotating-x-axis-labels-in-r-for-barplot
 
@@ -996,26 +996,26 @@ barplot(cities_by_clinic,
 We see that there are few cities with several clinics, and many cities with only one or two clinics.
 
 We can get a contingency table:
-```{r contingency-table-clinics-frequency, eval = FALSE}
+```{r contingency-table-clinics-frequency}
 clinics_frequency <- table(cities_by_clinic)
 
 clinics_frequency
 ```
 
-Which informs us that we got `r #clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r #noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
+Which informs us that we got `r clinics_frequency[[1]]` cities with one fertility clinic in them, and one city with `r noquote(names(clinics_frequency[length(clinics_frequency)]))` clinics in it. 
 
-```{r cities-with-and-without-clinics, eval = FALSE}
+```{r cities-with-and-without-clinics}
 clinic_cities <- length(cities_by_clinic)
 no_clinic_cities <- 19495 - clinic_cities
 ```
 
-In total, we have `r #clinic_cities` cities with at least a fertility clinic.
+In total, we have `r clinic_cities` cities with at least a fertility clinic.
 
 According to the [United States Census Bureau](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk), there are 19,495 cities  (defined as incorporated places, with some exceptions) in the country. Which means that there are `r #no_clinic_cities` cities with no fertility clinic.
 
 Let's add this datum to the table and represent it in a bar plot. We will add counts with zero frequency as well, it will be useful later.
 
-```{r barplot-clinics-by-city-2, eval = FALSE}
+```{r barplot-clinics-by-city-2}
 
 clinics_frequency_dataframe <- rbind(
   data.frame(cities_by_clinic = as.character(c(0, 9:20)),
@@ -1037,7 +1037,7 @@ barplot(height = clinics_frequency_dataframe$Freq,
 
 If we represent it in a logarithmic scale:
 
-```{r barplot-clinics-by-city-logarithmic, eval = FALSE}
+```{r barplot-clinics-by-city-logarithmic}
 
 barplot(height = (clinics_frequency_dataframe$Freq)+1, # To avoid errors converting to log
         names.arg = clinics_frequency_dataframe$cities_by_clinic,
@@ -1054,7 +1054,7 @@ The Poisson distribution is used for frequency distribution of counts of rare bu
 
 We will try to reproduce the above bar plot with a random generation for the Poisson distribution with parameter *lambda* equal to the mean count per sample.
 
-```{r table-simulated-Poisson, eval = FALSE}
+```{r table-simulated-Poisson}
 # Generate a vector with the number of clinics in a city
 counts <- as.numeric(as.character(clinics_frequency_dataframe$cities_by_clinic))
 
@@ -1078,7 +1078,7 @@ The data shown in the table doesn't look like a good match for our data.
 
 Another possibility is the **negative binomial distribution**, for cases in which the variance is much greater than the mean.  
 In our case:
-```{r variance-mean-ratio, eval = FALSE}
+```{r variance-mean-ratio}
 var(vector_counts)/mean(vector_counts)
 ```
 
@@ -1090,7 +1090,7 @@ mean(vector_counts)^2/(var(vector_counts)-mean(vector_counts))
 ```
 
 A function that computes the maximum likelihood estimate of **k** from a vector of frequencies of counts:
-```{r kfit-function, eval = FALSE}
+```{r kfit-function}
 #From _The R Book_, section 7.4.7
 kfit <- function(x) {
   lhs <- numeric()
@@ -1118,7 +1118,7 @@ kfit <- function(x) {
 ```
 
 Trying it with the clinics count data:
-```{r max-like-estimate-of-k-for-freq, eval = FALSE}
+```{r max-like-estimate-of-k-for-freq}
 k_for_freq <- kfit(freq)
 
 k_for_freq
@@ -1127,7 +1127,7 @@ So, the maximum likelihood of _k_ is this case is `r #k_for_freq`.
 
 How would a negative binomial distribution with a mean of `r #lambda` and that _k_ value describe our count data? The expected frequencies are obtained by multiplying the probability density by the total sample size (`r #clinic_cities+no_clinic_cities` in this case).
 
-```{r expected-frequencies-neg-binom, eval = FALSE}
+```{r expected-frequencies-neg-binom}
 cities <- clinic_cities+no_clinic_cities
 k <- k_for_freq
 terms <- (0:(length(freq)-1))
@@ -1137,7 +1137,7 @@ negative_binomial <- cities*(1+lambda/k)^(- k)*factorial(k+ terms -1)/
 
 We will compare observed and expected frequencies using bar plot, alternating the bars for observed and expected (*from* The R Book, *section 7.4.7*).
 
-```{r barplot-observed-expected, eval = FALSE}
+```{r barplot-observed-expected}
 #Concatenate observed and expected frequencies in an alternating sequence.
 # Put the observed counts (freq) in the odd-numbered bars and the expected counts
 # (negative_binomial) in the even-numbered bars.
