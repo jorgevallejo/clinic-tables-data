@@ -1224,13 +1224,13 @@ lines(seq(0, 1, 0.01), dbeta(seq(0, 1, 0.01), beta_ratio[[1]], beta_ratio[[2]]))
 
 I does not look bad. Although I wonder if we could use the negative binomial (or the gamma distribution).  
 The relation between mean and variance:
-```{r var-mu-ratio, eval = FALSE}
+```{r var-mu-ratio}
 var/mu
 ```
 
 The mean is quite higher than the variance, which leads away from the negative binomial distribution, but away as well from the Poisson distribution (which is characterized for having the same mean and variance). Maybe the answer is in the gamma distribution.
 
-```{r histogram-ratiodonortrans2-gamma-dist, eval = FALSE}
+```{r histogram-ratiodonortrans2-gamma-dist}
 # Calculate the two parameter values for the gamma distribution
 rate <- mean(ratio_donor_trans2, na.rm = TRUE)
 shape <- rate*mean(ratio_donor_trans2, na.rm = TRUE)
@@ -1254,7 +1254,7 @@ In short, **I am accepting the beta distribution as the probability distribution
 Let's take a last variable for a probability question; ND_IntentRetLB2 (Ratio of intended retrievals resulting in live births for patients aged 35-37 years old).
 Which distribution follows this variable?
 
-```{r histogram-ndintretlb2, eval = FALSE}
+```{r histogram-ndintretlb2}
 #table(clinic_data$ND_IntentRetLB2)
 
 #max(table(clinic_data$ND_IntentRetLB2))
@@ -1266,7 +1266,7 @@ hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01),
 
 This looks like a normal distribution skewed to the right. Maybe a gamma, then.
 
-```{r histogram-ndintretlb2-normal-gamma, eval = FALSE}
+```{r histogram-ndintretlb2-normal-gamma}
 # Draw histogram with density instead of frequency of counts
 hist(clinic_data$ND_IntentRetLB2, breaks = seq(0,1,0.01), 
      main = "Ratio of intended retrievals \nresulting in live births for patients aged 35-37 years old",
