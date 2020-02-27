@@ -1293,7 +1293,7 @@ Given the fit, I would say that the variable ND_IntentRetLB2 follows a **normal 
 ## 5.4 A brief simulation model
 Let's say that the last studied variable, ND_IntentRetLB2, effectively follows a normal distribution with the calculated mean and variance. If we were to simulate its frequency distribution, would we get and histogram like that from the real data?
 
-```{r histogram-simulated-ndintretlb2, eval = FALSE}
+```{r histogram-simulated-ndintretlb2}
 # Use the same population size than in real data (exclude NA)
 n_NDIRLB2 <- sum(!is.na(clinic_data$ND_IntentRetLB2))
 
@@ -1329,7 +1329,7 @@ Is there a relationship between clinic size and the percentage of transfers that
 We can use the total number of ART cycles (variable `TotNumCyclesAll`) as a measure of the size of the clinic.  
 Getting the number of transfers and the percentage of transfers that resulted in live birth is a bit tricky:
 
-```{r calculate-derived-variables, eval = FALSE}
+```{r calculate-derived-variables}
 # Calculate number of living births for each group of transfers
 columns_NumTrans <- c(37:41, 82:85)
 columns_ratioTransLB <- c(42:46, 86:89)
