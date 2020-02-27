@@ -1359,7 +1359,7 @@ TotRatioLB <- TotNumLB/TotNumTransfers
 
 Let's try a plot diagram to explore the relation between ART cycles and ratio of living births by transfer:
 
-```{r plot-cycles-ratio-living-births-transfer, eval = FALSE}
+```{r plot-cycles-ratio-living-births-transfer}
 plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
 
 ```
@@ -1370,14 +1370,14 @@ Let's try to carry out a regression:
 
 If we calculate the correlation between both variables:
 
-```{r correlation-cycles-ratioLB, eval = FALSE}
+```{r correlation-cycles-ratioLB}
 cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")
 ```
 
 There doesn't seem to be any correlation or, if there is any, it is very weak.
 
 But let's work in the regression model:
-```{r regression-model-cycles-ratioLB, eval = FALSE}
+```{r regression-model-cycles-ratioLB}
 RegModel <- lm(TotRatioLB~clinic_data$TotNumCyclesAll)
 
 summary(RegModel)
@@ -1389,7 +1389,7 @@ Y = 1.103e-05x + 0.419
 
 Let's add it to the graph:
 
-```{r plot-cycles-ratioLB-least-squares-line, eval = FALSE}
+```{r plot-cycles-ratioLB-least-squares-line}
 plot(clinic_data$TotNumCyclesAll, TotRatioLB, main = "Ratio of living births by transfer vs. ART cycles", xlab = "Cycles", ylab = "Ratio", pch = 21, col = "blue", bg = "aliceblue")
 
 abline(RegModel, col = "red")
@@ -1399,7 +1399,7 @@ The correlation coefficient is only 0.008369, which I interpret as a very poor a
 
 Let's check those assumptions:
 
-```{r qqplots-for-cycles-and-ratioLB, fig.height = 20, fig.width = 8, eval = FALSE}
+```{r qqplots-for-cycles-and-ratioLB, fig.height = 20, fig.width = 8}
 # Check normality with qqplot
 par(mfcol = c(4,1))
 
@@ -1419,7 +1419,7 @@ hist(TotRatioLB, main = "Ratios of living births per transfer", xlab = "Ratios",
 
 It is clear the the total number of cycles doesn't follow a normal distribution. The ratios of living births per transfer look more like it, but if we test it with Shapiro-Wilk:
 
-```{r shapiro-ratioLB, eval = FALSE}
+```{r shapiro-ratioLB}
 shapiro.test(TotRatioLB)
 ```
 
@@ -1427,7 +1427,7 @@ With a p-value so low be reject the null hypothesis of normality. We may instead
 The result was `r #cor(clinic_data$TotNumCyclesAll, y=TotRatioLB, use = "complete")`,  
 which means that there is not correlation between the variables.  
 The significativity of that result is:
-```{r correlation-cycles-ratioLB-2, eval = FALSE}
+```{r correlation-cycles-ratioLB-2}
 cor.test(clinic_data$TotNumCyclesAll, y=TotRatioLB, method = "pearson")
 ```
 Which doesn't let as reject the alternative hypothesis.
